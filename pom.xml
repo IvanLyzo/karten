@@ -6,12 +6,54 @@
 
     <groupId>lyzo</groupId>
     <artifactId>karten</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <!-- fundamental, non-visual APIs -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+
+        <!-- core APIs for creating and rendering visual user interface -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+
+        <!-- includes all the standard, pre-built user interface components -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>21.0.2</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- extension for Maven to compile/run/package JavaFX apps -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+
+                <configuration>
+                    <mainClass>lyzo.karten.Application</mainClass>
+                    <options>
+                        <option>--add-modules</option>
+                        <option>javafx.base,javafx.graphics,javafx.controls</option>
+                    </options>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

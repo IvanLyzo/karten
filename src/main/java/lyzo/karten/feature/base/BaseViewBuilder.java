@@ -2,7 +2,7 @@ package lyzo.karten.feature.base;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
-import lyzo.karten.feature.interfaces.ViewBuilder;
+import lyzo.karten.utility.interfaces.ViewBuilder;
 
 public class BaseViewBuilder implements ViewBuilder {
 

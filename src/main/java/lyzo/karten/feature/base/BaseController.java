@@ -1,7 +1,7 @@
 package lyzo.karten.feature.base;
 
 import javafx.scene.layout.Region;
-import lyzo.karten.feature.interfaces.Controller;
+import lyzo.karten.utility.interfaces.Controller;
 
 public class BaseController implements Controller {
 

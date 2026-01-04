@@ -1,4 +1,4 @@
-package lyzo.karten.feature.interfaces;
+package lyzo.karten.utility.interfaces;
 
 import javafx.scene.layout.Region;
 import javafx.util.Builder;

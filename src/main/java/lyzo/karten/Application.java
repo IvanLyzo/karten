@@ -1,10 +1,10 @@
 package lyzo.karten;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import lyzo.karten.database.AppDataPath;
 import lyzo.karten.database.DBAccess;
+import lyzo.karten.feature.base.BaseController;
 
 import java.nio.file.Path;
 
@@ -27,8 +27,11 @@ public class Application extends javafx.application.Application {
         // create DBAccess object
         DBAccess dbAccess = new DBAccess(appDataDir);
 
+        // create the base controller (actually controls everything, application just does set up)
+        BaseController controller = new BaseController();
+
         // prepare scene (window content)
-        Scene scene = new Scene(new Label("Hello, World!"));
+        Scene scene = new Scene(controller.buildView());
 
         // add scene
         stage.setScene(scene);

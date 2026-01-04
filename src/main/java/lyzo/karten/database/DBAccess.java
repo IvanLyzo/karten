@@ -2,6 +2,7 @@ package lyzo.karten.database;
 
 import lyzo.karten.mapper.Mapper;
 import lyzo.karten.utility.exceptions.SQLExecutionException;
+import lyzo.karten.utility.logger.Logger;
 
 import java.nio.file.Path;
 import java.sql.*;
@@ -23,7 +24,7 @@ public class DBAccess {
 
         // establish connection
         try (Connection conn = DriverManager.getConnection(dbURL)) {
-            System.out.println("Connection established successfully!");
+            Logger.getInstance().log("Connection established successfully!", Logger.DEBUG);
         } catch (SQLException e) {
             throw new RuntimeException("Could not establish connection to database!");
         }

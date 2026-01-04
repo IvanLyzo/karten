@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import lyzo.karten.database.AppDataPath;
 import lyzo.karten.database.DBAccess;
 import lyzo.karten.feature.base.BaseController;
+import lyzo.karten.utility.logger.Logger;
 
 import java.nio.file.Path;
 
@@ -12,6 +13,7 @@ public class Application extends javafx.application.Application {
 
     // program entry point; calls start method below
     public static void main(String[] args) {
+        Logger.setLogLevel(Logger.DEBUG);
         launch(args);
     }
 

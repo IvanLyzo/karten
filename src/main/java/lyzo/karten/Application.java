@@ -5,9 +5,11 @@ import javafx.stage.Stage;
 import lyzo.karten.database.AppDataPath;
 import lyzo.karten.database.DBAccess;
 import lyzo.karten.feature.base.BaseController;
+import lyzo.karten.model.AppModel;
 import lyzo.karten.utility.logger.Logger;
 
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class Application extends javafx.application.Application {
 
@@ -26,19 +28,36 @@ public class Application extends javafx.application.Application {
         // create AppData directory
         Path appDataDir = AppDataPath.createAppDir();
 
+        // get scene
+        Scene scene = getScene(appDataDir);
+
+        // add scene to window
+        stage.setScene(scene);
+
+        // show stage
+        stage.show();
+    }
+
+    private Scene getScene(Path appDataDir) {
         // create DBAccess object
         DBAccess dbAccess = new DBAccess(appDataDir);
+
+        // somewhere here will eventually create repositories to link the model with db access
+
+        // create app model layer
+        AppModel appModel = new AppModel();
 
         // create the base controller (actually controls everything, application just does set up)
         BaseController controller = new BaseController();
 
         // prepare scene (window content)
-        Scene scene = new Scene(controller.buildView());
+        Scene scene = new Scene(controller.buildView(appModel));
 
-        // add scene
-        stage.setScene(scene);
+        // add stylesheets to scene
+        scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/styles/k_controls.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/styles/k_regions.css")).toExternalForm());
 
-        // show stage
-        stage.show();
+        // return scene
+        return scene;
     }
 }

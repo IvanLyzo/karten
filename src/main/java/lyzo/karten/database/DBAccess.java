@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/// Decided against multiple DAOs for simple project, only one class will interact with database
+// Decided against multiple DAOs for simple project, only one class will interact with database
 public class DBAccess {
 
     // url to access the database
@@ -22,6 +22,9 @@ public class DBAccess {
         // construct URL for database connection
         dbURL = "jdbc:sqlite:" + dbPath;
 
+        // create schemas (if not already existing)
+        SchemaInitializer.initialize(this);
+
         // establish connection
         try (Connection conn = DriverManager.getConnection(dbURL)) {
             Logger.getInstance().log("Connection established successfully!", Logger.DEBUG);
@@ -30,8 +33,8 @@ public class DBAccess {
         }
     }
 
-    /// executeQuery is used for executing READ queries, mapping the result with a custom
-    /// Mapper functional interface, and returning a list of the results
+    // executeQuery is used for executing READ queries, mapping the result with a custom
+    // Mapper functional interface, and returning a list of the results
     public <T> List<T> executeQuery(String sql, Mapper<T> mapper, Object... args) {
         // returnable list of result objects T
         List<T> results = new ArrayList<>();
@@ -61,8 +64,8 @@ public class DBAccess {
         return results;
     }
 
-    /// executeUpdate is used for executing any SQL commands that do not expect
-    /// a result to be given back (UPDATE, DELETE)
+    // executeUpdate is used for executing any SQL commands that do not expect
+    // a result to be given back (UPDATE, DELETE)
     public void executeUpdate(String sql, Object... args) {
         // establish database connection with PreparedStatement
         try (Connection conn = DriverManager.getConnection(dbURL);
@@ -82,9 +85,9 @@ public class DBAccess {
         }
     }
 
-    /// executeInsert is similar to executeUpdate, but returns the UID of the
-    /// newly created object, useful for CREATE operations when continuing work
-    /// on just-created objects via new UID
+    // executeInsert is similar to executeUpdate, but returns the UID of the
+    // newly created object, useful for CREATE operations when continuing work
+    // on just-created objects via new UID
     public int executeInsert(String sql, Object... args) {
         // establish database connection with a PreparedStatement
         try (Connection conn = DriverManager.getConnection(dbURL);

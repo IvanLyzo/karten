@@ -6,6 +6,7 @@ import lyzo.karten.database.AppDataPath;
 import lyzo.karten.database.DBAccess;
 import lyzo.karten.feature.base.BaseController;
 import lyzo.karten.model.AppModel;
+import lyzo.karten.repository.DeckRepository;
 import lyzo.karten.utility.logger.Logger;
 
 import java.nio.file.Path;
@@ -45,7 +46,7 @@ public class Application extends javafx.application.Application {
         // somewhere here will eventually create repositories to link the model with db access
 
         // create app model layer
-        AppModel appModel = new AppModel();
+        AppModel appModel = new AppModel(new DeckRepository(dbAccess));
 
         // create the base controller (actually controls everything, application just does set up)
         BaseController controller = new BaseController();

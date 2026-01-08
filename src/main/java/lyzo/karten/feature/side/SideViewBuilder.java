@@ -29,10 +29,10 @@ public class SideViewBuilder implements ViewBuilder {
     @Override
     public Region build() {
         // creates vertical pane, fills it with nav options
-        VBox pane = KRegions.KVerticalBox("",
+        VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT,
                 menuItem("Karten", homeAction),
                 menuItem("Library", libraryAction),
-                new Separator(),
+                separator(),
                 menuItem("Settings", settingsAction)
         );
 
@@ -54,5 +54,9 @@ public class SideViewBuilder implements ViewBuilder {
         box.getChildren().add(label);
 
         return box;
+    }
+
+    private Node separator() {
+        return new Separator();
     }
 }

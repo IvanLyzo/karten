@@ -8,7 +8,7 @@ public class LibraryController implements Controller {
 
     @Override
     public Region buildView(AppModel appModel) {
-        LibraryViewBuilder viewBuilder = new LibraryViewBuilder();
+        LibraryViewBuilder viewBuilder = new LibraryViewBuilder(appModel.getDecks());
 
         return viewBuilder.build();
     }

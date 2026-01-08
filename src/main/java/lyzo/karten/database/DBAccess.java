@@ -27,7 +27,7 @@ public class DBAccess {
 
         // establish connection
         try (Connection conn = DriverManager.getConnection(dbURL)) {
-            Logger.getInstance().log("Connection established successfully!", Logger.DEBUG);
+            Logger.log("Connection established successfully!", Logger.DEBUG);
         } catch (SQLException e) {
             throw new RuntimeException("Could not establish connection to database!");
         }

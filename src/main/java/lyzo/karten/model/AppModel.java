@@ -24,7 +24,5 @@ public class AppModel {
 
     public AppModel(DeckRepository deckRepository) {
         decks.addAll(deckRepository.getAllDecks());
-
-        Logger.getInstance().log(decks.toString(), Logger.NORMAL);
     }
 }

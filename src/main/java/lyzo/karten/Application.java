@@ -16,7 +16,7 @@ public class Application extends javafx.application.Application {
 
     // program entry point; calls start method below
     public static void main(String[] args) {
-        Logger.setLogLevel(Logger.DEBUG);
+        Logger.setLogLevel(Logger.INFO);
         launch(args);
     }
 

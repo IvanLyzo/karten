@@ -1,6 +1,7 @@
 package lyzo.karten.feature.base;
 
 import javafx.scene.layout.Region;
+import lyzo.karten.feature.side.SideController;
 import lyzo.karten.model.AppModel;
 import lyzo.karten.utility.interfaces.Controller;
 
@@ -10,7 +11,7 @@ public class BaseController implements Controller {
     @Override
     public Region buildView(AppModel appModel) {
         // create a base view builder
-        BaseViewBuilder viewBuilder = new BaseViewBuilder();
+        BaseViewBuilder viewBuilder = new BaseViewBuilder(new SideController().buildView(appModel));
 
         // display it
         return viewBuilder.build();

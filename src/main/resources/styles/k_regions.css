@@ -1,0 +1,13 @@
+/* stackPane classes */
+.section-pane {
+    -fx-background-color: #BBBBBB;
+    -fx-background-radius: 20;
+
+    -fx-padding: 20;
+
+    -fx-effect: dropshadow(three-pass-box, #888888, 0, 0, 8, 8);
+}
+
+.split-pane > .split-pane-divider {
+    -fx-background-color: transparent;
+}

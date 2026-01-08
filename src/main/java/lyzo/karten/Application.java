@@ -49,7 +49,7 @@ public class Application extends javafx.application.Application {
         AppModel appModel = new AppModel(new DeckRepository(dbAccess));
 
         // create the base controller (actually controls everything, application just does set up)
-        BaseController controller = new BaseController();
+        BaseController controller = new BaseController(appModel);
 
         // prepare scene (window content)
         Scene scene = new Scene(controller.buildView(appModel));

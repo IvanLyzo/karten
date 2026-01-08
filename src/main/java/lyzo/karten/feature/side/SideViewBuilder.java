@@ -1,9 +1,11 @@
 package lyzo.karten.feature.side;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -14,15 +16,24 @@ import lyzo.karten.utility.ui.KRegions;
 // side menu view builder
 public class SideViewBuilder implements ViewBuilder {
 
+    private final EventHandler<MouseEvent> homeAction;
+    private final EventHandler<MouseEvent> libraryAction;
+    private final EventHandler<MouseEvent> settingsAction;
+
+    public SideViewBuilder(EventHandler<MouseEvent> homeAction, EventHandler<MouseEvent> libraryAction, EventHandler<MouseEvent> settingsAction) {
+        this.homeAction = homeAction;
+        this.libraryAction = libraryAction;
+        this.settingsAction = settingsAction;
+    }
+
     @Override
     public Region build() {
         // creates vertical pane, fills it with nav options
         VBox pane = KRegions.KVerticalBox("",
-                title(),
-                menuItem("Library"),
+                menuItem("Karten", homeAction),
+                menuItem("Library", libraryAction),
                 new Separator(),
-                menuItem("Profile"),
-                menuItem("Settings")
+                menuItem("Settings", settingsAction)
         );
 
         // set spacing and padding
@@ -33,21 +44,12 @@ public class SideViewBuilder implements ViewBuilder {
         return pane;
     }
 
-    private Node title() {
-        HBox title_box = new HBox();
-        title_box.setAlignment(Pos.CENTER_LEFT);
-
-        Label title = KControls.KLabel("", "Karten");
-        title_box.getChildren().add(title);
-
-        return title_box;
-    }
-
-    private Node menuItem(String name) {
+    private Node menuItem(String name, EventHandler<MouseEvent> clickAction) {
         HBox box = new HBox();
         box.setAlignment(Pos.CENTER_LEFT);
 
         Label label = KControls.KLabel("", name);
+        label.setOnMouseClicked(clickAction);
 
         box.getChildren().add(label);
 

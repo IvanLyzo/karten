@@ -1,11 +1,11 @@
 package lyzo.karten.feature.base;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import lyzo.karten.feature.empty.EmptyViewBuilder;
 import lyzo.karten.utility.interfaces.ViewBuilder;
 import lyzo.karten.utility.ui.KRegions;
 
@@ -14,10 +14,12 @@ public class BaseViewBuilder implements ViewBuilder {
 
     // side menu pre-built region
     // (view builder does not concern itself with creation of other regions, merely their layout)
-    private final Region sideMenu;
+    private final ObjectProperty<Region> sideView;
+    private final ObjectProperty<Region> mainView;
 
-    public BaseViewBuilder(Region sideMenu) {
-        this.sideMenu = sideMenu;
+    public BaseViewBuilder(ObjectProperty<Region> sideView, ObjectProperty<Region> mainView) {
+        this.sideView = sideView;
+        this.mainView = mainView;
     }
 
     @Override
@@ -27,8 +29,8 @@ public class BaseViewBuilder implements ViewBuilder {
         root.setOrientation(Orientation.HORIZONTAL);
 
         // populate it with side and main screens
-        root.getItems().add(sectionPane(sideMenu));
-        root.getItems().add(sectionPane(new EmptyViewBuilder().build()));
+        root.getItems().add(sectionPane(sideView));
+        root.getItems().add(sectionPane(mainView));
 
         // set default split at 1/6 width from left (for smaller left-side menu)
         root.widthProperty().addListener((_, _, _) -> {
@@ -40,9 +42,14 @@ public class BaseViewBuilder implements ViewBuilder {
     }
 
     // wrapper for any displayed section
-    private Region sectionPane(Region region) {
+    private Region sectionPane(ObjectProperty<Region> view) {
         // stackPane root
-        StackPane pane = KRegions.KStackPane("section-pane", region);
+        StackPane pane = KRegions.KStackPane("section-pane", view.get());
+
+        // adds event listener for switching views reactively
+        view.addListener((obs, oldView, newView) -> {
+            pane.getChildren().setAll(newView);
+        });
 
         // create margins around each section
         StackPane.setMargin(pane, new Insets(20, 20, 20, 20));

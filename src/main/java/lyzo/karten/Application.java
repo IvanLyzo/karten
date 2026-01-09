@@ -52,7 +52,7 @@ public class Application extends javafx.application.Application {
         BaseController controller = new BaseController(appModel);
 
         // prepare scene (window content)
-        Scene scene = new Scene(controller.buildView(appModel));
+        Scene scene = new Scene(controller.buildView());
 
         // add stylesheets to scene
         scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/styles/k_controls.css")).toExternalForm());

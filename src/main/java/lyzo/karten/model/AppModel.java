@@ -3,11 +3,12 @@ package lyzo.karten.model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lyzo.karten.repository.DeckRepository;
-import lyzo.karten.utility.logger.Logger;
 
 // main app model, creating at runtime for each instance
 // loaded from and saved to database
 public class AppModel {
+
+    private final DeckRepository deckRepository;
 
     // observable list of all user-created decks
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
@@ -18,11 +19,18 @@ public class AppModel {
     }
 
     // add one deck to collection (for CREATE operations)
-    public void addDeck(Deck deck) {
+    public Deck addDeck() {
+        int id = deckRepository.insertDeck(new DeckCreation("New Deck #" + decks.size(), ""));
+
+        Deck deck = deckRepository.getDeckById(id);
         decks.add(deck);
+
+        return deck;
     }
 
     public AppModel(DeckRepository deckRepository) {
+        this.deckRepository = deckRepository;
+
         decks.addAll(deckRepository.getAllDecks());
     }
 }

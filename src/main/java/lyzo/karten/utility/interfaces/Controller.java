@@ -5,5 +5,5 @@ import lyzo.karten.model.AppModel;
 
 public interface Controller {
 
-    Region buildView(AppModel appModel);
+    Region buildView();
 }

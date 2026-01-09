@@ -3,7 +3,6 @@ package lyzo.karten.feature.side;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import lyzo.karten.model.AppModel;
 import lyzo.karten.utility.interfaces.Controller;
 
 // controller for handling side menu action (mostly navigation)
@@ -20,7 +19,7 @@ public class SideController implements Controller {
     }
 
     @Override
-    public Region buildView(AppModel appModel) {
+    public Region buildView() {
         // create a base view builder
         SideViewBuilder viewBuilder = new SideViewBuilder(homeAction, libraryAction, settingsAction);
 

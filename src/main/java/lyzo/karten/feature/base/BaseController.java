@@ -14,6 +14,7 @@ import lyzo.karten.utility.logger.Logger;
 // base controller for the entire application; handles most of the root logic
 public class BaseController implements Controller {
 
+    // application model
     private final AppModel appModel;
 
     // region container for side view
@@ -27,16 +28,16 @@ public class BaseController implements Controller {
         this.appModel = appModel;
 
         // set side view to default controller build view
-        sideView.set(new SideController(this::homeAction, this::libraryAction, this::settingsAction).buildView(appModel));
+        sideView.set(new SideController(this::homeAction, this::libraryAction, this::settingsAction).buildView());
         Logger.log("Set sideView to SideController.build()", Logger.INFO);
 
         // set main view to default controller build view
-        mainView.set(new SideController(this::homeAction, this::libraryAction, this::settingsAction).buildView(appModel));
+        mainView.set(new HomeController().buildView());
         Logger.log("Set mainView to SideController.build()", Logger.INFO);
     }
 
     @Override
-    public Region buildView(AppModel appModel) {
+    public Region buildView() {
         // create a base view builder
         BaseViewBuilder viewBuilder = new BaseViewBuilder(sideView, mainView);
         Logger.log("Created base viewBuilder with side view: " + sideView + ", main view: " + mainView + ".", Logger.INFO);
@@ -45,17 +46,20 @@ public class BaseController implements Controller {
         return viewBuilder.build();
     }
 
+    // display home main view
     private void homeAction(MouseEvent mouseEvent) {
         Logger.log("Home action, set main view to home controller build view", Logger.INFO);
-        mainView.set(new HomeController().buildView(appModel));
+        mainView.set(new HomeController().buildView());
 
     }
 
+    // display library main view
     private void libraryAction(MouseEvent mouseEvent) {
         Logger.log("Library action, set main view to library controller build view", Logger.INFO);
-        mainView.set(new LibraryController().buildView(appModel));
+        mainView.set(new LibraryController(appModel, this::libraryAction).buildView());
     }
 
+    // display settings main view (NOT IMPLEMENTED)
     private void settingsAction(MouseEvent mouseEvent) {
         Logger.log("Settings action", Logger.INFO);
     }

@@ -15,7 +15,7 @@ public class LibraryController implements Controller {
 
     public LibraryController(AppModel appModel, EventHandler<MouseEvent> selectDeckAction) {
         // save app model
-        this.appModel = appModel;
+        this.appModel= appModel;
 
         // save select deck action
         this.selectDeckAction = selectDeckAction;
@@ -30,6 +30,7 @@ public class LibraryController implements Controller {
 
     private void createDeck(MouseEvent mouseEvent) {
         Deck deck = appModel.addDeck();
+        appModel.setActiveDeck(deck);
 
         selectDeckAction.handle(mouseEvent);
     }

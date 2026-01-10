@@ -1,5 +1,7 @@
 package lyzo.karten.model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lyzo.karten.repository.DeckRepository;
@@ -12,6 +14,9 @@ public class AppModel {
 
     // observable list of all user-created decks
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
+
+    // property for active deck for editing or playing
+    private final ObjectProperty<Deck> activeDeck = new SimpleObjectProperty<>();
 
     // getter for binding and reading value
     public ObservableList<Deck> getDecks() {
@@ -26,6 +31,14 @@ public class AppModel {
         decks.add(deck);
 
         return deck;
+    }
+
+    public void setActiveDeck(Deck deck) {
+        activeDeck.set(deck);
+    }
+
+    public Deck getActiveDeck() {
+        return activeDeck.get();
     }
 
     public AppModel(DeckRepository deckRepository) {

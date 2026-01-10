@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
+import lyzo.karten.feature.editor.EditorController;
 import lyzo.karten.feature.home.HomeController;
 import lyzo.karten.feature.library.LibraryController;
 import lyzo.karten.feature.side.SideController;
@@ -56,7 +57,12 @@ public class BaseController implements Controller {
     // display library main view
     private void libraryAction(MouseEvent mouseEvent) {
         Logger.log("Library action, set main view to library controller build view", Logger.INFO);
-        mainView.set(new LibraryController(appModel, this::libraryAction).buildView());
+        mainView.set(new LibraryController(appModel, this::editorAction).buildView());
+    }
+
+    private void editorAction(MouseEvent mouseEvent) {
+        Logger.log("Editor action, set main view to editor controller build view based on active deck", Logger.INFO);
+        mainView.set(new EditorController(appModel.getActiveDeck()).buildView());
     }
 
     // display settings main view (NOT IMPLEMENTED)

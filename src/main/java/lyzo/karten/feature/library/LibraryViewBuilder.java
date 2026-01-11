@@ -74,7 +74,7 @@ public class LibraryViewBuilder implements ViewBuilder {
         VBox.setVgrow(deckViewBox, Priority.ALWAYS);
 
         // pane root
-        VBox pane = KRegions.KVerticalBox("", Pos.TOP_CENTER,
+        VBox pane = KRegions.KVerticalBox("", Pos.TOP_CENTER, 40,
                 titleBox,
                 subtitleBox,
                 KControls.KSeparator("", Orientation.HORIZONTAL),
@@ -85,7 +85,6 @@ public class LibraryViewBuilder implements ViewBuilder {
 
         // set min width and spacing
         pane.setMinWidth(500);
-        pane.setSpacing(40);
 
         // display it
         return pane;
@@ -167,7 +166,7 @@ public class LibraryViewBuilder implements ViewBuilder {
         HBox descriptionBox = KRegions.KHorizontalBox("", Pos.TOP_LEFT, 20, description);
 
         // middle fill
-        VBox fillBox = KRegions.KVerticalBox("", Pos.CENTER);
+        VBox fillBox = KRegions.KVerticalBox("", Pos.CENTER, 0);
         VBox.setVgrow(fillBox, Priority.ALWAYS);
 
         // bottom buttons
@@ -185,12 +184,11 @@ public class LibraryViewBuilder implements ViewBuilder {
         buttonBox.setPadding(new Insets(20, 0, 0, 0));
 
         // root pane with all components
-        VBox pane = KRegions.KVerticalBox("div", Pos.TOP_CENTER,
+        VBox pane = KRegions.KVerticalBox("div", Pos.TOP_CENTER, 20,
                 titleBox,
                 descriptionBox,
                 fillBox,
                 buttonBox);
-        pane.setPadding(new Insets(20, 20, 20, 20));
 
         // return it
         return pane;

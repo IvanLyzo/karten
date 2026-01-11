@@ -29,7 +29,7 @@ public class SideViewBuilder implements ViewBuilder {
     @Override
     public Region build() {
         // creates vertical pane, fills it with nav options
-        VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT,
+        VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT, 10,
                 menuItem("KARTEN", homeAction),
                 menuItem("Library", libraryAction),
                 separator(),
@@ -37,7 +37,6 @@ public class SideViewBuilder implements ViewBuilder {
         );
 
         // set spacing and padding
-        pane.setSpacing(10);
         pane.setMinWidth(250);
 
         // display pane

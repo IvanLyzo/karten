@@ -1,19 +1,18 @@
 package lyzo.karten.feature.editor;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import lyzo.karten.model.Card;
 import lyzo.karten.model.Deck;
 import lyzo.karten.utility.interfaces.ViewBuilder;
-import lyzo.karten.utility.logger.Logger;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
@@ -52,34 +51,62 @@ public class EditorViewBuilder implements ViewBuilder {
         HBox descriptionBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, description, editDescription);
         descriptionBox.setMaxWidth(Region.USE_PREF_SIZE);
 
+        // header box
+        HBox headerBox = KRegions.KHorizontalBox("", Pos.CENTER_LEFT, 50, nameBox, descriptionBox);
+
+        // workspace box
+        HBox workspaceBox = KRegions.KHorizontalBox("", Pos.CENTER_LEFT, 50, cardList(), cardEditor());
+        workspaceBox.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(workspaceBox, Priority.ALWAYS);
+
         // root pane
-        VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT,
+        VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT, 40,
                 titleBox,
                 subtitleBox,
                 KControls.KSeparator("", Orientation.HORIZONTAL),
-                nameBox,
-                descriptionBox,
-                workspace()
+                headerBox,
+                workspaceBox
         );
 
         // set min width and spacing
         pane.setMinWidth(500);
-        pane.setSpacing(40);
 
         // return it
         return pane;
     }
 
-    private Node workspace() {
-        ListView<Card> cardListView = new ListView<>();
+    private Node cardList() {
+        // new card box
+        Button newCard = KControls.KButton("green-button", KControls.KLabel("heading2-shadow", "New Card +"), null);
+        HBox newCardBox = KRegions.KHorizontalBox("", Pos.CENTER, 0, newCard);
 
-        // add listener to selection model
+        // base card view
+        ListView<Card> cardListView = KRegions.KListView("", deckCards);
+        cardListView.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(cardListView, Priority.ALWAYS);
+
+        // add custom components and populate
+        addListener(cardListView);
+        setCellFactory(cardListView);
+
+        // create component container
+        VBox cardListContainer = KRegions.KVerticalBox("div", Pos.TOP_CENTER, 20, newCardBox, cardListView);
+        cardListContainer.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(cardListContainer, Priority.ALWAYS);
+
+        // return it
+        return cardListContainer;
+    }
+
+    private void addListener(ListView<Card> cardListView) {
         cardListView.getSelectionModel().selectedItemProperty().addListener((obs, oldCard, newCard) -> {
-            Logger.log("selected card: " + newCard.front(), Logger.INFO);
-        });
 
+        });
+    }
+
+    private void setCellFactory(ListView<Card> cardListView) {
         // configure visual style of list cells
-        cardListView.setCellFactory(lv -> new ListCell<>() {
+        cardListView.setCellFactory(_ -> new ListCell<>() {
 
             @Override
             protected void updateItem(Card card, boolean empty) {
@@ -92,29 +119,40 @@ public class EditorViewBuilder implements ViewBuilder {
                 }
 
                 Label id = KControls.KLabel("heading2-shadow", card.id() + "");
-                HBox cardBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, id);
+                HBox cardBox = KRegions.KHorizontalBox("card-view", Pos.CENTER_LEFT, 20, id);
 
                 setGraphic(cardBox);
             }
         });
-
-        // populate list view
-        populateCardList(cardListView);
-
-        // make reactive with card list changes
-        deckCards.addListener((ListChangeListener<Card>) _ -> populateCardList(cardListView));
-
-        // create workspace container
-        HBox workspaceBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, cardListView);
-        workspaceBox.setMaxWidth(Region.USE_PREF_SIZE);
-
-        // return it
-        return workspaceBox;
     }
 
-    private void populateCardList(ListView<Card> cardListView) {
-        cardListView.getItems().clear();
+    private Node cardEditor() {
+        // card content label
+        Label content = KControls.KLabel("body-text", "What is the powerhouse of the cell?");
 
-        cardListView.getItems().addAll(deckCards);
+        // card body
+        VBox cardPreview = KRegions.KVerticalBox("card-preview", Pos.CENTER, 0, content);
+
+        cardPreview.prefHeightProperty().bind(cardPreview.widthProperty().multiply(9.0 / 16.0));
+
+        VBox.setVgrow(cardPreview, Priority.NEVER);
+        cardPreview.setMaxHeight(Region.USE_PREF_SIZE);
+
+        // flip card action box
+        Label side = KControls.KLabel("heading2-shadow", "Front");
+//        HBox sideBox = KRegions.KHorizontalBox("div-special", Pos.CENTER_LEFT, 20, side);
+
+        Button flipCard = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "Flip card"), null);
+        HBox flipBox = KRegions.KHorizontalBox("div-special", Pos.CENTER_LEFT, 20, side, flipCard);
+
+        // root pane
+        VBox creationContainer = KRegions.KVerticalBox("div", Pos.TOP_LEFT, 20, cardPreview, flipBox);
+
+        // set width
+        creationContainer.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(creationContainer, Priority.ALWAYS);
+
+        // return it
+        return creationContainer;
     }
 }

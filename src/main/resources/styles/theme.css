@@ -1,0 +1,21 @@
+.root {
+    /* colour theme */
+    -karten-pure-white: #FDFDFD;
+    -karten-off-white: #FFFFF4;
+    -karten-black: #2F2F2F;
+
+    -karten-blue: #A9C9FF;
+    -karten-blue-shadow: #70A5FF;
+
+    -karten-green: #C6E5A6;
+    -karten-green-shadow: #70AE32;
+
+    -karten-yellow: #FFEBA3;
+    -karten-yellow-shadow: #FFD747;
+
+    -karten-red: #F7B4A8;
+    -karten-red-shadow: #EE5E44;
+
+    /* sizing */
+
+}

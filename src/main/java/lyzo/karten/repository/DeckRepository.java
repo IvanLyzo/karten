@@ -32,4 +32,9 @@ public class DeckRepository {
 
         return dbAccess.executeInsert(sql, deckCreation.name(), deckCreation.description());
     }
+
+    public void removeDeck(Deck d) {
+        String sql = "DELETE FROM decks WHERE id = ?";
+        dbAccess.executeUpdate(sql, d.id());
+    }
 }

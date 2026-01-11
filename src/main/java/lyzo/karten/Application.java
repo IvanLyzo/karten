@@ -1,6 +1,7 @@
 package lyzo.karten;
 
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lyzo.karten.database.AppDataPath;
 import lyzo.karten.database.DBAccess;
@@ -57,6 +58,13 @@ public class Application extends javafx.application.Application {
         // add stylesheets to scene
         scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/styles/k_controls.css")).toExternalForm());
         scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/styles/k_regions.css")).toExternalForm());
+
+        scene.getStylesheets().add(Objects.requireNonNull(this.getClass().getResource("/styles/theme.css")).toExternalForm());
+
+        // load fonts
+        Font.loadFont(Objects.requireNonNull(getClass().getResource("/fonts/PlusJakartaSans-Bold.ttf")).toExternalForm(), 417);
+        Font.loadFont(Objects.requireNonNull(getClass().getResource("/fonts/PlusJakartaSans-Regular.ttf")).toExternalForm(), 417);
+        Font.loadFont(Objects.requireNonNull(getClass().getResource("/fonts/PlusJakartaSans-Light.ttf")).toExternalForm(), 417);
 
         // return scene
         return scene;

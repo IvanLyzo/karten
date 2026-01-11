@@ -1,0 +1,77 @@
+/* label */
+.heading {
+    -fx-font-family: "Plus Jakarta Sans Bold";
+    -fx-font-size: 35px;
+
+    -fx-text-fill:-karten-black;
+}
+
+.heading2 {
+    -fx-font-family: "Plus Jakarta Sans Bold";
+    -fx-font-size: 28px;
+
+    -fx-text-fill:-karten-black;
+}
+
+.body-text {
+    -fx-font-family: "Plus Jakarta Sans Bold";
+    -fx-font-size: 14px;
+
+    -fx-text-fill:-karten-black;
+}
+
+.heading-shadow {
+    -fx-font-family: "Plus Jakarta Sans Bold";
+    -fx-font-size: 35px;
+
+    -fx-text-fill:-karten-pure-white;
+
+    -fx-effect: dropshadow(three-pass-box, -karten-black, 0, 0, 3, 3);
+}
+
+/* button label */
+.heading2-shadow {
+    -fx-font-family: "Plus Jakarta Sans Bold";
+    -fx-font-size: 28px;
+
+    -fx-text-fill:-karten-pure-white;
+
+    -fx-effect: dropshadow(three-pass-box, -karten-black, 0, 0, 2, 2);
+}
+
+/* button */
+.blue-button {
+    -fx-background-color: -karten-blue;
+    -fx-background-radius: 20;
+
+    -fx-padding: 15;
+
+    -fx-effect: dropshadow(three-pass-box, -karten-blue-shadow, 0, 0, 4, 4);
+}
+
+.green-button {
+    -fx-background-color: -karten-green;
+    -fx-background-radius: 20;
+
+    -fx-padding: 15;
+
+    -fx-effect: dropshadow(three-pass-box, -karten-green-shadow, 0, 0, 4, 4);
+}
+
+.yellow-button {
+    -fx-background-color: -karten-yellow;
+    -fx-background-radius: 20;
+
+    -fx-padding: 15;
+
+    -fx-effect: dropshadow(three-pass-box, -karten-yellow-shadow, 0, 0, 4, 4);
+}
+
+.red-button {
+    -fx-background-color: -karten-red;
+    -fx-background-radius: 20;
+
+    -fx-padding: 15;
+
+    -fx-effect: dropshadow(three-pass-box, -karten-red-shadow, 0, 0, 4, 4);
+}

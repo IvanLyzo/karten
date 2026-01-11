@@ -25,12 +25,7 @@ public class BaseViewBuilder implements ViewBuilder {
     @Override
     public Region build() {
         // root is a horizontal splitPane for resizing flexibility
-        SplitPane root = new SplitPane();
-        root.setOrientation(Orientation.HORIZONTAL);
-
-        // populate it with side and main screens
-        root.getItems().add(sectionPane(sideView));
-        root.getItems().add(sectionPane(mainView));
+        SplitPane root = KRegions.KSplitPane("back-pane", Orientation.HORIZONTAL, sectionPane(sideView), sectionPane(mainView));
 
         // set default split at 1/6 width from left (for smaller left-side menu)
         root.widthProperty().addListener((_, _, _) -> {

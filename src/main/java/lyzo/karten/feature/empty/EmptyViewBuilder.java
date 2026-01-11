@@ -14,7 +14,7 @@ public class EmptyViewBuilder implements ViewBuilder {
     @Override
     public Region build() {
         // main message
-        Label emptyMessage = KControls.KLabel("", "Nothing to see here yet!");
+        Label emptyMessage = KControls.KLabel("heading", "Nothing to see here yet!");
 
         // create vertical box for positioning
         VBox pane = KRegions.KVerticalBox("", Pos.CENTER, emptyMessage);

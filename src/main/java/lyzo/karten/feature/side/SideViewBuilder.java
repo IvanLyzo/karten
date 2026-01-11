@@ -30,7 +30,7 @@ public class SideViewBuilder implements ViewBuilder {
     public Region build() {
         // creates vertical pane, fills it with nav options
         VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT,
-                menuItem("Karten", homeAction),
+                menuItem("KARTEN", homeAction),
                 menuItem("Library", libraryAction),
                 separator(),
                 menuItem("Settings", settingsAction)
@@ -48,7 +48,7 @@ public class SideViewBuilder implements ViewBuilder {
         HBox box = new HBox();
         box.setAlignment(Pos.CENTER_LEFT);
 
-        Label label = KControls.KLabel("", name);
+        Label label = KControls.KLabel("heading", name);
         label.setOnMouseClicked(clickAction);
 
         box.getChildren().add(label);

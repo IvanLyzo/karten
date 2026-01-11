@@ -1,12 +1,22 @@
 package lyzo.karten.utility.ui;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 
 public class KControls {
+
+    public static Separator KSeparator(String className, Orientation orientation) {
+        Separator separator = new Separator(orientation);
+
+        separator.getStyleClass().add(className);
+
+        return separator;
+    }
 
     public static Label KLabel(String className, String message) {
         Label label = new Label(message);

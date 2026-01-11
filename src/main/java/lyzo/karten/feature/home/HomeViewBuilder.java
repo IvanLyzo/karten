@@ -8,6 +8,6 @@ public class HomeViewBuilder implements ViewBuilder {
 
     @Override
     public Region build() {
-        return KControls.KLabel("", "Nothing to see here! (Home view)");
+        return KControls.KLabel("heading", "Nothing to see here! (Home view)");
     }
 }

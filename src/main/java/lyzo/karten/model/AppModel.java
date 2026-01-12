@@ -98,8 +98,11 @@ public class AppModel {
 
         // tie card list to active deck
         activeDeck.addListener((observable, oldValue, newValue) -> {
-            deckCards.setAll(cardRepository.getCardsInDeck(newValue.id()));
-            Logger.log("changed cards to of deck with id: " + newValue.id(), Logger.INFO);
+            if (newValue == null) {
+                deckCards.clear();
+            } else {
+                deckCards.setAll(cardRepository.getCardsInDeck(newValue.id()));
+            }
         });
     }
 }

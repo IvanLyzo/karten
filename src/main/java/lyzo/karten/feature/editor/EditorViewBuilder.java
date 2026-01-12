@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import lyzo.karten.model.Card;
 import lyzo.karten.model.Deck;
 import lyzo.karten.utility.interfaces.ViewBuilder;
+import lyzo.karten.utility.logger.Logger;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
@@ -40,6 +41,10 @@ public class EditorViewBuilder implements ViewBuilder {
 
     @Override
     public Region build() {
+        if (deck.get() == null) {
+            return buildEmpty();
+        }
+
         // title box
         Label title = KControls.KLabel("heading", "Deck Editor");
         HBox titleBox = KRegions.KHorizontalBox("", Pos.TOP_LEFT, 20, title);
@@ -136,7 +141,13 @@ public class EditorViewBuilder implements ViewBuilder {
     private Node cardEditor() {
         // card content label
         Label content = KControls.KLabel("body-text", "");
-        activeCard.addListener((_, _, newCard) -> content.setText(newCard.id() + ": " + newCard.front()));
+        activeCard.addListener((_, _, newCard) -> {
+            if (newCard == null) {
+                content.setText("");
+            } else {
+                content.setText(newCard.id() + ": " + newCard.front());
+            }
+        });
 
         // card body
         VBox cardPreview = KRegions.KVerticalBox("card-preview", Pos.CENTER, 0, content);
@@ -163,5 +174,9 @@ public class EditorViewBuilder implements ViewBuilder {
 
         // return it
         return creationContainer;
+    }
+
+    private Region buildEmpty() {
+        return KControls.KLabel("heading", "Empty deck, nothing to show!");
     }
 }

@@ -17,11 +17,13 @@ import lyzo.karten.utility.ui.KRegions;
 public class SideViewBuilder implements ViewBuilder {
 
     private final EventHandler<MouseEvent> homeAction;
+    private final EventHandler<MouseEvent> editorAction;
     private final EventHandler<MouseEvent> libraryAction;
     private final EventHandler<MouseEvent> settingsAction;
 
-    public SideViewBuilder(EventHandler<MouseEvent> homeAction, EventHandler<MouseEvent> libraryAction, EventHandler<MouseEvent> settingsAction) {
+    public SideViewBuilder(EventHandler<MouseEvent> homeAction, EventHandler<MouseEvent> editorAction, EventHandler<MouseEvent> libraryAction, EventHandler<MouseEvent> settingsAction) {
         this.homeAction = homeAction;
+        this.editorAction = editorAction;
         this.libraryAction = libraryAction;
         this.settingsAction = settingsAction;
     }
@@ -31,6 +33,7 @@ public class SideViewBuilder implements ViewBuilder {
         // creates vertical pane, fills it with nav options
         VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT, 10,
                 menuItem("KARTEN", homeAction),
+                menuItem("Editor", editorAction),
                 menuItem("Library", libraryAction),
                 separator(),
                 menuItem("Settings", settingsAction)

@@ -29,7 +29,7 @@ public class BaseController implements Controller {
         this.appModel = appModel;
 
         // set side view to default controller build view
-        sideView.set(new SideController(this::homeAction, this::libraryAction, this::settingsAction).buildView());
+        sideView.set(new SideController(this::homeAction, this::editorAction, this::libraryAction, this::settingsAction).buildView());
         Logger.log("Set sideView to SideController.build()", Logger.INFO);
 
         // set main view to default controller build view

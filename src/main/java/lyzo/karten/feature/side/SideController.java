@@ -9,11 +9,18 @@ import lyzo.karten.utility.interfaces.Controller;
 public class SideController implements Controller {
 
     private final EventHandler<MouseEvent> homeAction;
+    private final EventHandler<MouseEvent> editorAction;
     private final EventHandler<MouseEvent> libraryAction;
     private final EventHandler<MouseEvent> settingsAction;
 
-    public SideController(EventHandler<MouseEvent> homeAction, EventHandler<MouseEvent> libraryAction, EventHandler<MouseEvent> settingsAction) {
+    public SideController(EventHandler<MouseEvent> homeAction,
+                          EventHandler<MouseEvent> editorAction,
+                          EventHandler<MouseEvent> libraryAction,
+                          EventHandler<MouseEvent> settingsAction) {
+
+        // save passed-down events
         this.homeAction = homeAction;
+        this.editorAction = editorAction;
         this.libraryAction = libraryAction;
         this.settingsAction = settingsAction;
     }
@@ -21,7 +28,7 @@ public class SideController implements Controller {
     @Override
     public Region buildView() {
         // create a base view builder
-        SideViewBuilder viewBuilder = new SideViewBuilder(homeAction, libraryAction, settingsAction);
+        SideViewBuilder viewBuilder = new SideViewBuilder(homeAction, editorAction, libraryAction, settingsAction);
 
         // display it
         return viewBuilder.build();

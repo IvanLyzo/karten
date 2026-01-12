@@ -10,9 +10,13 @@ import java.sql.SQLException;
 
     @Override
     public Deck map(ResultSet rs) {
-        Deck d = null;
+        Deck d;
         try {
-            d = new Deck(rs.getInt("id"), rs.getTimestamp("created_at").toInstant(), rs.getTimestamp("last_edited").toInstant(), rs.getString("name"), rs.getString("description"));
+            d = new Deck(rs.getInt("id"),
+                    rs.getTimestamp("created_at").toInstant(),
+                    rs.getTimestamp("last_edited").toInstant(),
+                    rs.getString("name"),
+                    rs.getString("description"));
         } catch (SQLException e) {
             throw new SQLMappingException(e, Deck.class, rs);
         }

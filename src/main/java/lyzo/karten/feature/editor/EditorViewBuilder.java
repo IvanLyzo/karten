@@ -2,10 +2,12 @@ package lyzo.karten.feature.editor;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -18,13 +20,22 @@ import lyzo.karten.utility.ui.KRegions;
 
 public class EditorViewBuilder implements ViewBuilder {
 
+    // passed-down properties/observables
     private final ObjectProperty<Deck> deck;
-
     private final ObservableList<Card> deckCards;
+    private final ObjectProperty<Card> activeCard;
 
-    public EditorViewBuilder(ObjectProperty<Deck> deck, ObservableList<Card> deckCards) {
+    // passed-down events
+    private final EventHandler<MouseEvent> newCardAction;
+
+    public EditorViewBuilder(ObjectProperty<Deck> deck, ObservableList<Card> deckCards, ObjectProperty<Card> activeCard,
+                             EventHandler<MouseEvent> newCardAction) {
+        // save passed-down information
         this.deck = deck;
         this.deckCards = deckCards;
+        this.activeCard = activeCard;
+
+        this.newCardAction = newCardAction;
     }
 
     @Override
@@ -77,7 +88,7 @@ public class EditorViewBuilder implements ViewBuilder {
 
     private Node cardList() {
         // new card box
-        Button newCard = KControls.KButton("green-button", KControls.KLabel("heading2-shadow", "New Card +"), null);
+        Button newCard = KControls.KButton("green-button", KControls.KLabel("heading2-shadow", "New Card +"), newCardAction);
         HBox newCardBox = KRegions.KHorizontalBox("", Pos.CENTER, 0, newCard);
 
         // base card view
@@ -85,8 +96,10 @@ public class EditorViewBuilder implements ViewBuilder {
         cardListView.setMaxHeight(Double.MAX_VALUE);
         VBox.setVgrow(cardListView, Priority.ALWAYS);
 
-        // add custom components and populate
-        addListener(cardListView);
+        // add selection model listener
+        cardListView.getSelectionModel().selectedItemProperty().addListener((_, _, newV) -> activeCard.set(newV));
+
+        // set cell factory
         setCellFactory(cardListView);
 
         // create component container
@@ -96,12 +109,6 @@ public class EditorViewBuilder implements ViewBuilder {
 
         // return it
         return cardListContainer;
-    }
-
-    private void addListener(ListView<Card> cardListView) {
-        cardListView.getSelectionModel().selectedItemProperty().addListener((obs, oldCard, newCard) -> {
-
-        });
     }
 
     private void setCellFactory(ListView<Card> cardListView) {
@@ -128,21 +135,23 @@ public class EditorViewBuilder implements ViewBuilder {
 
     private Node cardEditor() {
         // card content label
-        Label content = KControls.KLabel("body-text", "What is the powerhouse of the cell?");
+        Label content = KControls.KLabel("body-text", "");
+        activeCard.addListener((_, _, newCard) -> content.setText(newCard.id() + ": " + newCard.front()));
 
         // card body
         VBox cardPreview = KRegions.KVerticalBox("card-preview", Pos.CENTER, 0, content);
 
+        // set aspect ratio of card
         cardPreview.prefHeightProperty().bind(cardPreview.widthProperty().multiply(9.0 / 16.0));
 
+        // limit growth to hold aspect ratio
         VBox.setVgrow(cardPreview, Priority.NEVER);
         cardPreview.setMaxHeight(Region.USE_PREF_SIZE);
 
         // flip card action box
         Label side = KControls.KLabel("heading2-shadow", "Front");
-//        HBox sideBox = KRegions.KHorizontalBox("div-special", Pos.CENTER_LEFT, 20, side);
-
         Button flipCard = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "Flip card"), null);
+
         HBox flipBox = KRegions.KHorizontalBox("div-special", Pos.CENTER_LEFT, 20, side, flipCard);
 
         // root pane

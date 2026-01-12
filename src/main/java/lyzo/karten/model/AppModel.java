@@ -20,6 +20,7 @@ public class AppModel {
     // card repository for database connection
     private final CardRepository cardRepository;
 
+
     // observable list of all user-created decks
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
 
@@ -67,12 +68,24 @@ public class AppModel {
         return deckCards;
     }
 
-    public void addCard(CardCreation data) {
-        int id = cardRepository.insertCard(data);
+    public Card addCard() {
+        int id = cardRepository.insertCard(new CardCreation(activeDeck.get().id(), deckCards.size(), "Front Content", "Back Content"));
 
         Card card = cardRepository.getCardById(id);
 
         deckCards.add(card);
+
+        return card;
+    }
+
+    private final ObjectProperty<Card> activeCard = new SimpleObjectProperty<>();
+
+    public ObjectProperty<Card> getActiveCard() {
+        return activeCard;
+    }
+
+    public void setActiveCard(Card c) {
+        activeCard.set(c);
     }
 
     public AppModel(DeckRepository deckRepository, CardRepository cardRepository) {

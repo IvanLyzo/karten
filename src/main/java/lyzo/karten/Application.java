@@ -7,6 +7,7 @@ import lyzo.karten.database.AppDataPath;
 import lyzo.karten.database.DBAccess;
 import lyzo.karten.feature.base.BaseController;
 import lyzo.karten.model.AppModel;
+import lyzo.karten.repository.CardRepository;
 import lyzo.karten.repository.DeckRepository;
 import lyzo.karten.utility.logger.Logger;
 
@@ -31,7 +32,7 @@ public class Application extends javafx.application.Application {
         Path appDataDir = AppDataPath.createAppDir();
 
         // get scene
-        Scene scene = getScene(appDataDir);
+        Scene scene = initScene(appDataDir);
 
         // add scene to window
         stage.setScene(scene);
@@ -40,14 +41,14 @@ public class Application extends javafx.application.Application {
         stage.show();
     }
 
-    private Scene getScene(Path appDataDir) {
+    private Scene initScene(Path appDataDir) {
         // create DBAccess object
         DBAccess dbAccess = new DBAccess(appDataDir);
 
         // somewhere here will eventually create repositories to link the model with db access
 
         // create app model layer
-        AppModel appModel = new AppModel(new DeckRepository(dbAccess));
+        AppModel appModel = new AppModel(new DeckRepository(dbAccess), new CardRepository(dbAccess));
 
         // create the base controller (actually controls everything, application just does set up)
         BaseController controller = new BaseController(appModel);

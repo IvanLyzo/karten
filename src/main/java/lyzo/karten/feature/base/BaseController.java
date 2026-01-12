@@ -63,7 +63,7 @@ public class BaseController implements Controller {
     // display editor main view
     private void editorAction(MouseEvent mouseEvent) {
         Logger.log("Editor action, set main view to editor controller build view based on active deck", Logger.INFO);
-        mainView.set(new EditorController(appModel.getActiveDeck(), appModel.getDeckCards()).buildView());
+        mainView.set(new EditorController(appModel).buildView());
     }
 
     // display settings main view (NOT IMPLEMENTED)

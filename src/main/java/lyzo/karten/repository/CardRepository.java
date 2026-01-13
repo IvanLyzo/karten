@@ -5,6 +5,8 @@ import lyzo.karten.mapper.CardMapper;
 import lyzo.karten.model.Card;
 import lyzo.karten.model.CardCreation;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 public class CardRepository {
@@ -31,6 +33,14 @@ public class CardRepository {
         String sql = "INSERT INTO cards (deck_id, position, front, back) VALUES (?, ?, ?, ?)";
 
         return dbAccess.executeInsert(sql, cardCreation.deck_id(), cardCreation.position(), cardCreation.front(), cardCreation.back());
+    }
+
+    public Card updateCard(int cardId, CardCreation newCard) {
+        String sql = "UPDATE cards SET last_edited = ?, position = ?, front = ?, back = ? WHERE id = ?";
+
+        dbAccess.executeUpdate(sql, Timestamp.from(Instant.now()), newCard.position(), newCard.front(), newCard.back(), cardId);
+
+        return getCardById(cardId);
     }
 
     public void removeCard(Card c) {

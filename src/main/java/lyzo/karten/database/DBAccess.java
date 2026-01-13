@@ -1,6 +1,7 @@
 package lyzo.karten.database;
 
 import lyzo.karten.mapper.Mapper;
+import lyzo.karten.model.CardCreation;
 import lyzo.karten.utility.exceptions.SQLExecutionException;
 import lyzo.karten.utility.logger.Logger;
 
@@ -95,7 +96,12 @@ public class DBAccess {
 
             // add arguments
             for (int i = 0; i < args.length; i++) {
-                stmt.setObject(i + 1, args[i]);
+                Object arg = args[i];
+                if (arg instanceof String s) {
+                    stmt.setString(i + 1, s);
+                } else {
+                    stmt.setObject(i + 1, arg);
+                }
             }
 
             // execute statement

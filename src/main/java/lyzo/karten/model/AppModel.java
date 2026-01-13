@@ -111,6 +111,24 @@ public class AppModel {
         activeCard.set(c);
     }
 
+    // replace card for updating card entries
+    public void updateCard(CardCreation newCard) {
+        // update entry in database
+        Card card = cardRepository.updateCard(activeCard.get().id(), newCard);
+        System.out.println("new entry card: " + card);
+
+        // update presence in list
+        for (Card deckCard : deckCards) {
+            if (deckCard == activeCard.get()) {
+                deckCards.set(deckCards.indexOf(deckCard), card);
+                break;
+            }
+        }
+
+        // update active card reference
+        activeCard.set(card);
+    }
+
     public AppModel(DeckRepository deckRepository, CardRepository cardRepository) {
         // save repository access
         this.deckRepository = deckRepository;

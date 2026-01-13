@@ -19,7 +19,7 @@ public class CardMapper implements Mapper<Card> {
                     rs.getTimestamp("last_edited").toInstant(),
                     rs.getInt("position"),
                     rs.getString("front"),
-                    rs.getString("front")
+                    rs.getString("back")
             );
         } catch (SQLException e) {
             throw new SQLMappingException(e, Card.class, rs);

@@ -1,23 +1,22 @@
 package lyzo.karten.feature.editor;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import lyzo.karten.model.Card;
+import lyzo.karten.model.CardCreation;
 import lyzo.karten.model.Deck;
 import lyzo.karten.model.DeckCreation;
 import lyzo.karten.utility.interfaces.ViewBuilder;
-import lyzo.karten.utility.logger.Logger;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
@@ -28,17 +27,23 @@ public class EditorViewBuilder implements ViewBuilder {
     private final ObjectProperty<DeckCreation> deckChanges;
     private final ObservableList<Card> deckCards;
     private final ObjectProperty<Card> activeCard;
+    private final ObjectProperty<CardCreation> cardChanges;
 
     // passed-down events
     private final EventHandler<MouseEvent> newCardAction;
 
-    public EditorViewBuilder(ObjectProperty<Deck> deck, ObjectProperty<DeckCreation> deckChanges, ObservableList<Card> deckCards, ObjectProperty<Card> activeCard,
+    // local variables
+    private final BooleanProperty previewFront = new SimpleBooleanProperty(true);
+
+    public EditorViewBuilder(ObjectProperty<Deck> deck, ObjectProperty<DeckCreation> deckChanges,
+                             ObservableList<Card> deckCards, ObjectProperty<Card> activeCard, ObjectProperty<CardCreation> cardChanges,
                              EventHandler<MouseEvent> newCardAction) {
         // save passed-down information
         this.deck = deck;
         this.deckChanges = deckChanges;
         this.deckCards = deckCards;
         this.activeCard = activeCard;
+        this.cardChanges = cardChanges;
 
         this.newCardAction = newCardAction;
     }
@@ -72,16 +77,24 @@ public class EditorViewBuilder implements ViewBuilder {
         HBox nameBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, name, editName);
         nameBox.setMaxWidth(Region.USE_PREF_SIZE);
 
-        editName.setOnAction(e -> {
-            enterEditMode(nameBox, name);
-        });
+        editName.setOnAction(_ -> KControls.editMode(nameBox, name, s -> deckChanges.set(new DeckCreation(s, deck.get().description()))));
 
         // deck description box
         Label description = KControls.KLabel("heading2-shadow", deck.get().description());
+        deck.addListener((_, _, newDeck) -> {
+            if (newDeck == null) {
+                description.setText("EMPTY");
+            } else {
+                description.setText(newDeck.description());
+            }
+        });
+
         Button editDescription = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "edit"), null);
 
         HBox descriptionBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, description, editDescription);
         descriptionBox.setMaxWidth(Region.USE_PREF_SIZE);
+
+        editDescription.setOnAction(e -> KControls.editMode(descriptionBox, description, s -> deckChanges.set(new DeckCreation(deck.get().name(), s))));
 
         // header box
         HBox headerBox = KRegions.KHorizontalBox("", Pos.CENTER_LEFT, 50, nameBox, descriptionBox);
@@ -105,39 +118,6 @@ public class EditorViewBuilder implements ViewBuilder {
 
         // return it
         return pane;
-    }
-
-    private void enterEditMode(HBox nameBox, Label nameLabel) {
-        TextField editSpace = KControls.KTextField("heading", nameLabel.getText());
-
-        // UX polish
-        editSpace.requestFocus();
-        editSpace.selectAll();
-
-        // replace label with text field
-        int index = nameBox.getChildren().indexOf(nameLabel);
-        nameBox.getChildren().set(index, editSpace);
-
-        // ENTER -> commit
-        editSpace.setOnAction(e -> {
-            deckChanges.set(new DeckCreation(editSpace.getText(), deck.get().description()));
-            nameBox.getChildren().set(index, nameLabel);
-        });
-
-        // ESC → cancel
-        editSpace.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ESCAPE) {
-                nameBox.getChildren().set(index, nameLabel);
-            }
-        });
-
-        // focus lost -> commit changes
-        editSpace.focusedProperty().addListener((_, _, isFocused) -> {
-            if (!isFocused) {
-                deckChanges.set(new DeckCreation(editSpace.getText(), deck.get().description()));
-                nameBox.getChildren().set(index, nameLabel);
-            }
-        });
     }
 
     private Node cardList() {
@@ -190,13 +170,8 @@ public class EditorViewBuilder implements ViewBuilder {
     private Node cardEditor() {
         // card content label
         Label content = KControls.KLabel("body-text", "");
-        activeCard.addListener((_, _, newCard) -> {
-            if (newCard == null) {
-                content.setText("");
-            } else {
-                content.setText(newCard.id() + ": " + newCard.front());
-            }
-        });
+        activeCard.addListener((_, _, _) -> updateContent(content));
+        previewFront.addListener((_, _, _) -> updateContent(content));
 
         // card body
         VBox cardPreview = KRegions.KVerticalBox("card-preview", Pos.CENTER, 0, content);
@@ -208,9 +183,31 @@ public class EditorViewBuilder implements ViewBuilder {
         VBox.setVgrow(cardPreview, Priority.NEVER);
         cardPreview.setMaxHeight(Region.USE_PREF_SIZE);
 
+        // make content editable
+        content.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                Card card = activeCard.get();
+                if (previewFront.get()) {
+                    KControls.editMode(cardPreview, content, s -> {
+                        CardCreation newCard = new CardCreation(card.deckId(), card.position(), s, card.back());
+                        cardChanges.set(newCard);
+                    });
+                } else {
+                    KControls.editMode(cardPreview, content, s -> {
+                        CardCreation newCard = new CardCreation(card.deckId(), card.position(), card.front(), s);
+                        cardChanges.set(newCard);
+                    });
+                }
+            }
+        });
+
         // flip card action box
         Label side = KControls.KLabel("heading2-shadow", "Front");
-        Button flipCard = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "Flip card"), null);
+        Button flipCard = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "Flip card"), _ -> {
+            System.out.println(previewFront.get());
+            previewFront.set(!previewFront.get());
+            System.out.println(previewFront.get());
+        });
 
         HBox flipBox = KRegions.KHorizontalBox("div-special", Pos.CENTER_LEFT, 20, side, flipCard);
 
@@ -223,6 +220,19 @@ public class EditorViewBuilder implements ViewBuilder {
 
         // return it
         return creationContainer;
+    }
+
+    private void updateContent(Label label) {
+        if (activeCard.get() == null) {
+            label.setText("");
+            return;
+        }
+
+        if (previewFront.get()) {
+            label.setText(activeCard.get().front());
+        } else {
+            label.setText(activeCard.get().back());
+        }
     }
 
     private Region buildEmpty() {

@@ -4,10 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import lyzo.karten.model.AppModel;
-import lyzo.karten.model.Card;
-import lyzo.karten.model.Deck;
-import lyzo.karten.model.DeckCreation;
+import lyzo.karten.model.*;
 import lyzo.karten.utility.interfaces.Controller;
 
 public class EditorController implements Controller {
@@ -15,6 +12,7 @@ public class EditorController implements Controller {
     private final AppModel appModel;
 
     private final ObjectProperty<DeckCreation> deckChanges = new SimpleObjectProperty<>();
+    private final ObjectProperty<CardCreation> cardChanges = new SimpleObjectProperty<>();
 
     public EditorController(AppModel appModel) {
         this.appModel = appModel;
@@ -22,11 +20,19 @@ public class EditorController implements Controller {
         deckChanges.addListener((obs, oldV, newV) -> {
             appModel.updateDeck(newV);
         });
+
+        cardChanges.addListener((obs, oldV, newV) -> {
+            System.out.println(newV);
+            appModel.updateCard(newV);
+        });
     }
 
     @Override
     public Region buildView() {
-        EditorViewBuilder viewBuilder = new EditorViewBuilder(appModel.getActiveDeck(), deckChanges, appModel.getDeckCards(), appModel.getActiveCard(), this::newDeckAction);
+        EditorViewBuilder viewBuilder = new EditorViewBuilder(
+                appModel.getActiveDeck(), deckChanges,
+                appModel.getDeckCards(), appModel.getActiveCard(),cardChanges,
+                this::newDeckAction);
 
         return viewBuilder.build();
     }

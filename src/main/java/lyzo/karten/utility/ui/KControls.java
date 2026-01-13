@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
 public class KControls {
@@ -24,6 +25,14 @@ public class KControls {
         label.getStyleClass().add(className);
 
         return label;
+    }
+
+    public static TextField KTextField(String className, String initialContent) {
+        TextField textField = new TextField(initialContent);
+
+        textField.getStyleClass().add(className);
+
+        return textField;
     }
 
     public static Button KButton(String className, Node text, EventHandler<MouseEvent> action) {

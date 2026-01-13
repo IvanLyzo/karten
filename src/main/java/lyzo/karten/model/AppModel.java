@@ -52,13 +52,36 @@ public class AppModel {
         activeDeck.set(deck);
     }
 
+    // replace deck for updating deck entries
+    public void updateDeck(DeckCreation newDeck) {
+        // update entry in database
+        Deck deck = deckRepository.updateDeck(activeDeck.get().id(), newDeck);
+
+        // update presence in list
+        for (int i = 0; i < decks.size(); i++) {
+            if (decks.get(i) == activeDeck.get()) {
+                decks.set(i, deck);
+                break;
+            }
+        }
+
+        // update active deck reference
+        activeDeck.set(deck);
+    }
+
     // delete the active deck
     public void deleteDeck() {
+        // remove associated card references
+        for (Card deckCard : deckCards) {
+            cardRepository.removeCard(deckCard);
+        }
+        deckCards.clear();
+
+        // remove deck references
         deckRepository.removeDeck(activeDeck.get());
 
         decks.remove(activeDeck.get());
         activeDeck.set(null);
-        deckCards.clear();
     }
 
     // observable list of active deck's cards

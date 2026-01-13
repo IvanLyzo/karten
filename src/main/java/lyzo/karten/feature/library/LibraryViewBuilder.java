@@ -33,6 +33,7 @@ public class LibraryViewBuilder implements ViewBuilder {
 
     // passed-down events
     private final EventHandler<MouseEvent> newDeckAction;
+    private final EventHandler<MouseEvent> playDeckAction;
     private final EventHandler<MouseEvent> selectDeckAction;
     private final EventHandler<MouseEvent> deleteDeckAction;
 
@@ -43,12 +44,14 @@ public class LibraryViewBuilder implements ViewBuilder {
     // save passed-down information
     public LibraryViewBuilder(ObservableList<Deck> decks, ObjectProperty<Deck> activeDeck,
                               EventHandler<MouseEvent> newDeckAction,
+                              EventHandler<MouseEvent> playDeckAction,
                               EventHandler<MouseEvent> selectDeckAction,
                               EventHandler<MouseEvent> deleteDeckAction) {
         this.decks = decks;
         this.activeDeck = activeDeck;
 
         this.newDeckAction = newDeckAction;
+        this.playDeckAction = playDeckAction;
         this.selectDeckAction = selectDeckAction;
         this.deleteDeckAction = deleteDeckAction;
     }
@@ -170,6 +173,10 @@ public class LibraryViewBuilder implements ViewBuilder {
         VBox.setVgrow(fillBox, Priority.ALWAYS);
 
         // bottom buttons
+        Button playDeck = KControls.KButton("blue-button", KControls.KLabel("heading2-shadow", "play"), mouseEvent -> {
+            activeDeck.set(deck);
+            playDeckAction.handle(mouseEvent);
+        });
         Button editDeck = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "edit"), mouseEvent -> {
             activeDeck.set(deck);
             selectDeckAction.handle(mouseEvent);
@@ -180,7 +187,7 @@ public class LibraryViewBuilder implements ViewBuilder {
         });
 
         // container for bottom buttons
-        HBox buttonBox = KRegions.KHorizontalBox("", Pos.BOTTOM_RIGHT, 20, editDeck, deleteDeck);
+        HBox buttonBox = KRegions.KHorizontalBox("", Pos.BOTTOM_RIGHT, 20, playDeck, editDeck, deleteDeck);
         buttonBox.setPadding(new Insets(20, 0, 0, 0));
 
         // root pane with all components

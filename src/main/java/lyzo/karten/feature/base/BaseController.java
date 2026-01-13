@@ -7,6 +7,7 @@ import javafx.scene.layout.Region;
 import lyzo.karten.feature.editor.EditorController;
 import lyzo.karten.feature.home.HomeController;
 import lyzo.karten.feature.library.LibraryController;
+import lyzo.karten.feature.play.PlayController;
 import lyzo.karten.feature.side.SideController;
 import lyzo.karten.model.AppModel;
 import lyzo.karten.utility.interfaces.Controller;
@@ -47,6 +48,12 @@ public class BaseController implements Controller {
         return viewBuilder.build();
     }
 
+    // display play main view
+    private void playAction(MouseEvent mouseEvent) {
+        Logger.log("play action, set main view to home controller", Logger.INFO);
+        mainView.set(new PlayController(appModel).buildView());
+    }
+
     // display home main view
     private void homeAction(MouseEvent mouseEvent) {
         Logger.log("Home action, set main view to home controller build view", Logger.INFO);
@@ -57,7 +64,7 @@ public class BaseController implements Controller {
     // display library main view
     private void libraryAction(MouseEvent mouseEvent) {
         Logger.log("Library action, set main view to library controller build view", Logger.INFO);
-        mainView.set(new LibraryController(appModel, this::editorAction).buildView());
+        mainView.set(new LibraryController(appModel, this::playAction, this::editorAction).buildView());
     }
 
     // display editor main view

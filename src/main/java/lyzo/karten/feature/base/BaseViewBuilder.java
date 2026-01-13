@@ -42,9 +42,7 @@ public class BaseViewBuilder implements ViewBuilder {
         StackPane pane = KRegions.KStackPane("section-pane", view.get());
 
         // adds event listener for switching views reactively
-        view.addListener((obs, oldView, newView) -> {
-            pane.getChildren().setAll(newView);
-        });
+        view.addListener((obs, oldView, newView) -> pane.getChildren().setAll(newView));
 
         // create margins around each section
         StackPane.setMargin(pane, new Insets(20, 20, 20, 20));

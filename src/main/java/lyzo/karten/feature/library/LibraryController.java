@@ -14,11 +14,13 @@ public class LibraryController implements Controller {
     private final AppModel appModel;
 
     // passed-down action
+    private final EventHandler<MouseEvent> playDeckAction;
     private final EventHandler<MouseEvent> selectDeckAction;
 
     // save passed-down information
-    public LibraryController(AppModel appModel, EventHandler<MouseEvent> selectDeckAction) {
+    public LibraryController(AppModel appModel, EventHandler<MouseEvent> playDeckAction, EventHandler<MouseEvent> selectDeckAction) {
         this.appModel= appModel;
+        this.playDeckAction = playDeckAction;
         this.selectDeckAction = selectDeckAction;
     }
 
@@ -27,8 +29,9 @@ public class LibraryController implements Controller {
         // create a library view builder
         LibraryViewBuilder viewBuilder = new LibraryViewBuilder(appModel.getDecks(), appModel.getActiveDeck(),
                 this::createDeck,
+                playDeckAction,
                 selectDeckAction,
-                _ -> appModel.deleteDeck());
+                this::deleteDeck);
 
         // display it
         return viewBuilder.build();
@@ -42,5 +45,9 @@ public class LibraryController implements Controller {
 
         // pass along for further action with active deck
         selectDeckAction.handle(mouseEvent);
+    }
+
+    private void deleteDeck(MouseEvent mouseEvent) {
+        appModel.deleteDeck();
     }
 }

@@ -2,15 +2,23 @@ package lyzo.karten.feature.play;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import lyzo.karten.feature.play.minigame.rowing.RowingController;
+import lyzo.karten.feature.play.minigame.rowing.RowingGameState;
 import lyzo.karten.model.AppModel;
 import lyzo.karten.utility.interfaces.Controller;
+import lyzo.karten.utility.interfaces.minigame.GameState;
+import lyzo.karten.utility.interfaces.minigame.MinigameController;
 
 public class PlayController implements Controller {
 
     private final AppModel appModel;
+
+    // minigame properties
+    private final ObjectProperty<MinigameController> minigameController = new SimpleObjectProperty<>();
+    private final ObjectProperty<GameState> gameState = new SimpleObjectProperty<>();
 
     // region container for view
     private final ObjectProperty<Region> view = new SimpleObjectProperty<>();
@@ -19,6 +27,14 @@ public class PlayController implements Controller {
         this.appModel = appModel;
 
         view.set(new MinigameSelectionViewBuilder(this::rowingGameAction).build());
+
+        minigameController.addListener((obs, oldV, newV) -> {
+            if (newV == null) {
+                view.set(new MinigameSelectionViewBuilder(this::rowingGameAction).build());
+            } else {
+                view.set(newV.buildView());
+            }
+        });
     }
 
     @Override
@@ -30,6 +46,10 @@ public class PlayController implements Controller {
     }
 
     private void rowingGameAction(MouseEvent event) {
-        view.set(new RowingController().buildView());
+        EventHandler<MouseEvent> playEvent = _ -> {
+            minigameController.set(new RowingController((RowingGameState) gameState.get()));
+        };
+
+        view.set(new LobbyCreationViewBuilder(gameState, playEvent).build());
     }
 }

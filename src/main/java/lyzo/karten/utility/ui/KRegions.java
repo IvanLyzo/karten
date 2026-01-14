@@ -36,7 +36,7 @@ public class KRegions {
         return hBox;
     }
 
-    public static StackPane KStackPane(String className, Region region) {
+    public static StackPane KStackPane(String className, Region... region) {
         StackPane pane = new StackPane(region);
 
         pane.getStyleClass().add(className);

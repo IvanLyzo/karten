@@ -17,9 +17,9 @@ public class LobbyCreationViewBuilder implements ViewBuilder {
 
     private final ObjectProperty<GameState> gameState;
 
-    private final EventHandler<MouseEvent> playGameAction;
+    private final Runnable playGameAction;
 
-    public LobbyCreationViewBuilder(ObjectProperty<GameState> gameState, EventHandler<MouseEvent> playGameAction) {
+    public LobbyCreationViewBuilder(ObjectProperty<GameState> gameState, Runnable playGameAction) {
         this.gameState = gameState;
         this.playGameAction = playGameAction;
     }
@@ -34,9 +34,9 @@ public class LobbyCreationViewBuilder implements ViewBuilder {
     }
 
     private void startGame(MouseEvent event) {
-        RowingGameState rowingGameState = new RowingGameState(5);
+        RowingGameState rowingGameState = new RowingGameState(200, 5);
         gameState.set(rowingGameState);
 
-        playGameAction.handle(event);
+        playGameAction.run();
     }
 }

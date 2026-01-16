@@ -2,7 +2,6 @@ package lyzo.karten.feature.play;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import lyzo.karten.feature.play.minigame.rowing.RowingController;
@@ -28,7 +27,7 @@ public class PlayController implements Controller {
 
         view.set(new MinigameSelectionViewBuilder(this::rowingGameAction).build());
 
-        minigameController.addListener((obs, oldV, newV) -> {
+        minigameController.addListener((_, _, newV) -> {
             if (newV == null) {
                 view.set(new MinigameSelectionViewBuilder(this::rowingGameAction).build());
             } else {
@@ -46,9 +45,7 @@ public class PlayController implements Controller {
     }
 
     private void rowingGameAction(MouseEvent event) {
-        EventHandler<MouseEvent> playEvent = _ -> {
-            minigameController.set(new RowingController((RowingGameState) gameState.get()));
-        };
+        Runnable playEvent = () -> minigameController.set(new RowingController(appModel, (RowingGameState) gameState.get()));
 
         view.set(new LobbyCreationViewBuilder(gameState, playEvent).build());
     }

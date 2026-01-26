@@ -1,36 +1,77 @@
 package lyzo.karten.feature.play.minigame.rowing;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
+import javafx.beans.property.*;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import lyzo.karten.model.AppModel;
-import lyzo.karten.utility.interfaces.minigame.MinigameController;
+import lyzo.karten.utility.structures.minigame.MinigameController;
 
-public class RowingController implements MinigameController {
+import java.util.Objects;
+import java.util.function.Consumer;
+
+public class RowingController extends MinigameController {
 
     private final AppModel appModel;
     private final RowingGameState gameState;
 
-    private boolean continueGame = true;
-
     private final DoubleProperty canvasWidth = new SimpleDoubleProperty(0);
     private final DoubleProperty canvasHeight = new SimpleDoubleProperty(0);
 
-    public RowingController(AppModel appModel, RowingGameState gameState) {
+    private final Consumer<Boolean> winCondition;
+
+    private Runnable drawGame;
+    private AnimationTimer gameLoop;
+
+    private final StringProperty response = new SimpleStringProperty("");
+    private final IntegerProperty index = new SimpleIntegerProperty(0);
+
+    public RowingController(AppModel appModel, RowingGameState gameState,
+                            Consumer<Boolean> winCondition) {
         this.appModel = appModel;
         this.gameState = gameState;
+
+        this.winCondition = winCondition;
+
+        gameState.activeCard.set(appModel.getDeckCards().getFirst());
+
+        index.addListener((_, _, newV) -> {
+            if (newV.intValue() >= appModel.getDeckCards().size()) {
+                index.set(0);
+            }
+            gameState.activeCard.set(appModel.getDeckCards().get(newV.intValue()));
+        });
     }
 
     @Override
     public Region buildView() {
-        RowingViewBuilder viewBuilder = new RowingViewBuilder(gameState, canvasWidth, canvasHeight,
-                this::initGame, this::updateGame);
+        RowingViewBuilder viewBuilder = new RowingViewBuilder(gameState, response, canvasWidth, canvasHeight);
+        drawGame = viewBuilder::drawGame;
 
-        return viewBuilder.build();
+        Region region = viewBuilder.build();
+
+        Platform.runLater(this::initGame);
+
+        Platform.runLater(region::requestFocus);
+        region.setOnMouseClicked(e -> region.requestFocus());
+
+        region.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (gameState.overlayOn.get() && event.getCode() == KeyCode.ENTER) {
+                submitResponse();
+            }
+        });
+
+        gameLoop = createLoop();
+        gameLoop.start();
+
+        return region;
     }
 
-    private void initGame() {
+    @Override
+    public void initGame() {
         initPlayerPositions();
     }
 
@@ -49,22 +90,60 @@ public class RowingController implements MinigameController {
         gameState.initPlayerPositions(positions);
     }
 
-    private boolean updateGame(double delta) {
-        // move players this frame
-        double playerOffset = -gameState.user.speed * delta;
-        gameState.players.forEach(player -> movePlayer(player, delta, playerOffset));
+    @Override
+    public void updateGame(double delta) {
+        if (gameState.overlayOn.get()) {
+            return;
+        }
 
-        return continueGame;
+        // update next flashcard cycle countdown
+        gameState.overlayCountdown.set(gameState.overlayCountdown.get() - delta);
+
+        // move players this frame
+        updateBoost(gameState.user, delta);
+        double playerOffset = -(gameState.user.speed + gameState.user.boostEffect) * delta;
+
+        gameState.players.forEach(player -> movePlayer(player, delta, playerOffset));
+    }
+
+    @Override
+    public void submitResponse() {
+        gameState.overlayOn.set(false);
+
+        // activate boost
+        if (Objects.equals(response.get(), gameState.activeCard.get().back())) {
+            gameState.user.boostEffect = gameState.user.boostStrength;
+            gameState.user.timeSinceBoost = 0;
+        }
+
+        index.set(index.get() + 1);
+    }
+
+    private void updateBoost(RowingGameState.Player player, double delta) {
+        if (player.boostEffect == 0) {
+            return;
+        }
+
+        player.timeSinceBoost += delta;
+
+        player.boostEffect = player.boostStrength * (3 - player.timeSinceBoost) / 3;
+        player.boostEffect = Math.max(player.boostEffect, 0);
     }
 
     private void movePlayer(RowingGameState.Player player, double delta, double playerOffset) {
         // move player
-        double dy = -player.speed * delta;
+        double dy = -(player.speed + player.boostEffect) * delta;
         player.move(dy - playerOffset);
 
-        // check if reached the end
+        // check if reached the end, end game if have
         if (player.metersRowed >= gameState.courseLength) {
-            continueGame = false;
+            gameLoop.stop();
+            winCondition.accept(player.id == 0);
         }
+    }
+
+    @Override
+    public void drawGame() {
+        drawGame.run();
     }
 }

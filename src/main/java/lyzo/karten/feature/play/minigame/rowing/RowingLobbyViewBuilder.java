@@ -1,25 +1,22 @@
-package lyzo.karten.feature.play;
+package lyzo.karten.feature.play.minigame.rowing;
 
 import javafx.beans.property.ObjectProperty;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import lyzo.karten.feature.play.minigame.rowing.RowingGameState;
-import lyzo.karten.utility.interfaces.ViewBuilder;
-import lyzo.karten.utility.interfaces.minigame.GameState;
+import lyzo.karten.utility.structures.ViewBuilder;
+import lyzo.karten.utility.structures.minigame.GameState;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
-public class LobbyCreationViewBuilder implements ViewBuilder {
+public class RowingLobbyViewBuilder implements ViewBuilder {
 
     private final ObjectProperty<GameState> gameState;
 
     private final Runnable playGameAction;
 
-    public LobbyCreationViewBuilder(ObjectProperty<GameState> gameState, Runnable playGameAction) {
+    public RowingLobbyViewBuilder(ObjectProperty<GameState> gameState, Runnable playGameAction) {
         this.gameState = gameState;
         this.playGameAction = playGameAction;
     }
@@ -33,8 +30,8 @@ public class LobbyCreationViewBuilder implements ViewBuilder {
         return container;
     }
 
-    private void startGame(MouseEvent event) {
-        RowingGameState rowingGameState = new RowingGameState(200, 5);
+    private void startGame() {
+        RowingGameState rowingGameState = new RowingGameState(1000, 5);
         gameState.set(rowingGameState);
 
         playGameAction.run();

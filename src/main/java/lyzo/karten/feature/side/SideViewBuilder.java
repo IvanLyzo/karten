@@ -1,27 +1,25 @@
 package lyzo.karten.feature.side;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import lyzo.karten.utility.interfaces.ViewBuilder;
+import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
 // side menu view builder
 public class SideViewBuilder implements ViewBuilder {
 
-    private final EventHandler<MouseEvent> homeAction;
-    private final EventHandler<MouseEvent> editorAction;
-    private final EventHandler<MouseEvent> libraryAction;
-    private final EventHandler<MouseEvent> settingsAction;
+    private final Runnable homeAction;
+    private final Runnable editorAction;
+    private final Runnable libraryAction;
+    private final Runnable settingsAction;
 
-    public SideViewBuilder(EventHandler<MouseEvent> homeAction, EventHandler<MouseEvent> editorAction, EventHandler<MouseEvent> libraryAction, EventHandler<MouseEvent> settingsAction) {
+    public SideViewBuilder(Runnable homeAction, Runnable editorAction, Runnable libraryAction, Runnable settingsAction) {
         this.homeAction = homeAction;
         this.editorAction = editorAction;
         this.libraryAction = libraryAction;
@@ -46,12 +44,12 @@ public class SideViewBuilder implements ViewBuilder {
         return pane;
     }
 
-    private Node menuItem(String name, EventHandler<MouseEvent> clickAction) {
+    private Node menuItem(String name, Runnable clickAction) {
         HBox box = new HBox();
         box.setAlignment(Pos.CENTER_LEFT);
 
         Label label = KControls.KLabel("heading", name);
-        label.setOnMouseClicked(clickAction);
+        label.setOnMouseClicked(_ -> clickAction.run());
 
         box.getChildren().add(label);
 

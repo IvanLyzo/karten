@@ -4,19 +4,17 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import lyzo.karten.model.Card;
 import lyzo.karten.model.CardCreation;
 import lyzo.karten.model.Deck;
 import lyzo.karten.model.DeckCreation;
-import lyzo.karten.utility.interfaces.ViewBuilder;
+import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
@@ -30,14 +28,14 @@ public class EditorViewBuilder implements ViewBuilder {
     private final ObjectProperty<CardCreation> cardChanges;
 
     // passed-down events
-    private final EventHandler<MouseEvent> newCardAction;
+    private final Runnable newCardAction;
 
     // local variables
     private final BooleanProperty previewFront = new SimpleBooleanProperty(true);
 
     public EditorViewBuilder(ObjectProperty<Deck> deck, ObjectProperty<DeckCreation> deckChanges,
                              ObservableList<Card> deckCards, ObjectProperty<Card> activeCard, ObjectProperty<CardCreation> cardChanges,
-                             EventHandler<MouseEvent> newCardAction) {
+                             Runnable newCardAction) {
         // save passed-down information
         this.deck = deck;
         this.deckChanges = deckChanges;
@@ -203,10 +201,8 @@ public class EditorViewBuilder implements ViewBuilder {
 
         // flip card action box
         Label side = KControls.KLabel("heading2-shadow", "Front");
-        Button flipCard = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "Flip card"), _ -> {
-            System.out.println(previewFront.get());
+        Button flipCard = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "Flip card"), () -> {
             previewFront.set(!previewFront.get());
-            System.out.println(previewFront.get());
         });
 
         HBox flipBox = KRegions.KHorizontalBox("div-special", Pos.CENTER_LEFT, 20, side, flipCard);

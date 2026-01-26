@@ -1,11 +1,9 @@
 package lyzo.karten.feature.library;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import lyzo.karten.model.AppModel;
 import lyzo.karten.model.Deck;
-import lyzo.karten.utility.interfaces.Controller;
+import lyzo.karten.utility.structures.Controller;
 
 // library controller, in charge of the deck library view
 public class LibraryController implements Controller {
@@ -14,11 +12,11 @@ public class LibraryController implements Controller {
     private final AppModel appModel;
 
     // passed-down action
-    private final EventHandler<MouseEvent> playDeckAction;
-    private final EventHandler<MouseEvent> selectDeckAction;
+    private final Runnable playDeckAction;
+    private final Runnable selectDeckAction;
 
     // save passed-down information
-    public LibraryController(AppModel appModel, EventHandler<MouseEvent> playDeckAction, EventHandler<MouseEvent> selectDeckAction) {
+    public LibraryController(AppModel appModel, Runnable playDeckAction, Runnable selectDeckAction) {
         this.appModel= appModel;
         this.playDeckAction = playDeckAction;
         this.selectDeckAction = selectDeckAction;
@@ -38,16 +36,16 @@ public class LibraryController implements Controller {
     }
 
     // action for creating a deck
-    private void createDeck(MouseEvent mouseEvent) {
+    private void createDeck() {
         // create the deck
         Deck deck = appModel.addDeck();
         appModel.setActiveDeck(deck);
 
         // pass along for further action with active deck
-        selectDeckAction.handle(mouseEvent);
+        selectDeckAction.run();
     }
 
-    private void deleteDeck(MouseEvent mouseEvent) {
+    private void deleteDeck() {
         appModel.deleteDeck();
     }
 }

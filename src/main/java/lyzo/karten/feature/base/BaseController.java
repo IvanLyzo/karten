@@ -2,7 +2,6 @@ package lyzo.karten.feature.base;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import lyzo.karten.feature.editor.EditorController;
 import lyzo.karten.feature.home.HomeController;
@@ -10,7 +9,7 @@ import lyzo.karten.feature.library.LibraryController;
 import lyzo.karten.feature.play.PlayController;
 import lyzo.karten.feature.side.SideController;
 import lyzo.karten.model.AppModel;
-import lyzo.karten.utility.interfaces.Controller;
+import lyzo.karten.utility.structures.Controller;
 import lyzo.karten.utility.logger.Logger;
 
 // base controller for the entire application; handles most of the root logic
@@ -49,32 +48,32 @@ public class BaseController implements Controller {
     }
 
     // display play main view
-    private void playAction(MouseEvent mouseEvent) {
-        Logger.log("play action, set main view to home controller", Logger.INFO);
-        mainView.set(new PlayController(appModel).buildView());
+    private void playAction() {
+        Logger.log("play action, set main view to play controller", Logger.INFO);
+        mainView.set(new PlayController(appModel, this::homeAction).buildView());
     }
 
     // display home main view
-    private void homeAction(MouseEvent mouseEvent) {
+    private void homeAction() {
         Logger.log("Home action, set main view to home controller build view", Logger.INFO);
         mainView.set(new HomeController().buildView());
 
     }
 
     // display library main view
-    private void libraryAction(MouseEvent mouseEvent) {
+    private void libraryAction() {
         Logger.log("Library action, set main view to library controller build view", Logger.INFO);
         mainView.set(new LibraryController(appModel, this::playAction, this::editorAction).buildView());
     }
 
     // display editor main view
-    private void editorAction(MouseEvent mouseEvent) {
+    private void editorAction() {
         Logger.log("Editor action, set main view to editor controller build view based on active deck", Logger.INFO);
         mainView.set(new EditorController(appModel).buildView());
     }
 
     // display settings main view (NOT IMPLEMENTED)
-    private void settingsAction(MouseEvent mouseEvent) {
+    private void settingsAction() {
         Logger.log("Settings action", Logger.INFO);
     }
 }

@@ -20,7 +20,6 @@ public class AppModel {
     // card repository for database connection
     private final CardRepository cardRepository;
 
-
     // observable list of all user-created decks
     private final ObservableList<Deck> decks = FXCollections.observableArrayList();
 

@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import lyzo.karten.utility.interfaces.ViewBuilder;
+import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 

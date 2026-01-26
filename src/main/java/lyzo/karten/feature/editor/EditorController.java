@@ -2,10 +2,9 @@ package lyzo.karten.feature.editor;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import lyzo.karten.model.*;
-import lyzo.karten.utility.interfaces.Controller;
+import lyzo.karten.utility.structures.Controller;
 
 public class EditorController implements Controller {
 
@@ -37,7 +36,7 @@ public class EditorController implements Controller {
         return viewBuilder.build();
     }
 
-    private void newDeckAction(MouseEvent mouseEvent) {
+    private void newDeckAction() {
         Card card = appModel.addCard();
 
         appModel.setActiveCard(card);

@@ -6,7 +6,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
-import lyzo.karten.utility.interfaces.ViewBuilder;
+import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KRegions;
 
 // base view builder; renders the base layouts and manages all inserted UI

@@ -5,17 +5,15 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import lyzo.karten.model.Deck;
-import lyzo.karten.utility.interfaces.ViewBuilder;
+import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
@@ -32,10 +30,10 @@ public class LibraryViewBuilder implements ViewBuilder {
     private final IntegerProperty deckPage = new SimpleIntegerProperty(1);
 
     // passed-down events
-    private final EventHandler<MouseEvent> newDeckAction;
-    private final EventHandler<MouseEvent> playDeckAction;
-    private final EventHandler<MouseEvent> selectDeckAction;
-    private final EventHandler<MouseEvent> deleteDeckAction;
+    private final Runnable newDeckAction;
+    private final Runnable playDeckAction;
+    private final Runnable selectDeckAction;
+    private final Runnable deleteDeckAction;
 
     // TEMPORARY constant dimensions for grid
     private final int rows = 2;
@@ -43,10 +41,10 @@ public class LibraryViewBuilder implements ViewBuilder {
 
     // save passed-down information
     public LibraryViewBuilder(ObservableList<Deck> decks, ObjectProperty<Deck> activeDeck,
-                              EventHandler<MouseEvent> newDeckAction,
-                              EventHandler<MouseEvent> playDeckAction,
-                              EventHandler<MouseEvent> selectDeckAction,
-                              EventHandler<MouseEvent> deleteDeckAction) {
+                              Runnable newDeckAction,
+                              Runnable playDeckAction,
+                              Runnable selectDeckAction,
+                              Runnable deleteDeckAction) {
         this.decks = decks;
         this.activeDeck = activeDeck;
 
@@ -173,17 +171,17 @@ public class LibraryViewBuilder implements ViewBuilder {
         VBox.setVgrow(fillBox, Priority.ALWAYS);
 
         // bottom buttons
-        Button playDeck = KControls.KButton("blue-button", KControls.KLabel("heading2-shadow", "play"), mouseEvent -> {
+        Button playDeck = KControls.KButton("blue-button", KControls.KLabel("heading2-shadow", "play"), () -> {
             activeDeck.set(deck);
-            playDeckAction.handle(mouseEvent);
+            playDeckAction.run();
         });
-        Button editDeck = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "edit"), mouseEvent -> {
+        Button editDeck = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "edit"), () -> {
             activeDeck.set(deck);
-            selectDeckAction.handle(mouseEvent);
+            selectDeckAction.run();
         });
-        Button deleteDeck = KControls.KButton("red-button", KControls.KLabel("heading2-shadow", "delete"), mouseEvent -> {
+        Button deleteDeck = KControls.KButton("red-button", KControls.KLabel("heading2-shadow", "delete"), () -> {
             activeDeck.set(deck);
-            deleteDeckAction.handle(mouseEvent);
+            deleteDeckAction.run();
         });
 
         // container for bottom buttons
@@ -234,7 +232,7 @@ public class LibraryViewBuilder implements ViewBuilder {
             int pageNum = i + 1;
 
             // create stylized page button
-            Button pageButton = KControls.KButton("blue-button", KControls.KLabel("heading2-shadow", String.valueOf(pageNum)), _ -> deckPage.set(pageNum));
+            Button pageButton = KControls.KButton("blue-button", KControls.KLabel("heading2-shadow", String.valueOf(pageNum)), () -> deckPage.set(pageNum));
 
             // add to controls
             controls.getChildren().add(pageButton);

@@ -72,11 +72,11 @@ public class KControls {
         });
     }
 
-    public static Button KButton(String className, Node text, EventHandler<MouseEvent> action) {
+    public static Button KButton(String className, Node text, Runnable action) {
         Button button = new Button();
 
         button.setGraphic(text);
-        button.setOnMouseClicked(action);
+        button.setOnMouseClicked(_ -> action.run());
 
         button.getStyleClass().add(className);
 

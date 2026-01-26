@@ -1,22 +1,20 @@
 package lyzo.karten.feature.side;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import lyzo.karten.utility.interfaces.Controller;
+import lyzo.karten.utility.structures.Controller;
 
 // controller for handling side menu action (mostly navigation)
 public class SideController implements Controller {
 
-    private final EventHandler<MouseEvent> homeAction;
-    private final EventHandler<MouseEvent> editorAction;
-    private final EventHandler<MouseEvent> libraryAction;
-    private final EventHandler<MouseEvent> settingsAction;
+    private final Runnable homeAction;
+    private final Runnable editorAction;
+    private final Runnable libraryAction;
+    private final Runnable settingsAction;
 
-    public SideController(EventHandler<MouseEvent> homeAction,
-                          EventHandler<MouseEvent> editorAction,
-                          EventHandler<MouseEvent> libraryAction,
-                          EventHandler<MouseEvent> settingsAction) {
+    public SideController(Runnable homeAction,
+                          Runnable editorAction,
+                          Runnable libraryAction,
+                          Runnable settingsAction) {
 
         // save passed-down events
         this.homeAction = homeAction;

@@ -1,7 +1,7 @@
 package lyzo.karten.feature.home;
 
 import javafx.scene.layout.Region;
-import lyzo.karten.utility.interfaces.Controller;
+import lyzo.karten.utility.structures.Controller;
 
 public class HomeController implements Controller {
 

@@ -1,7 +1,6 @@
-package lyzo.karten.utility.interfaces;
+package lyzo.karten.utility.structures;
 
 import javafx.scene.layout.Region;
-import lyzo.karten.model.AppModel;
 
 public interface Controller {
 

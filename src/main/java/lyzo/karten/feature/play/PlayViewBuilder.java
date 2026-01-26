@@ -1,8 +1,9 @@
 package lyzo.karten.feature.play;
 
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.layout.*;
-import lyzo.karten.utility.interfaces.ViewBuilder;
+import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KRegions;
 
 public class PlayViewBuilder implements ViewBuilder {
@@ -15,14 +16,19 @@ public class PlayViewBuilder implements ViewBuilder {
 
     @Override
     public Region build() {
-        StackPane pane = KRegions.KStackPane("", view.get());
+        StackPane playRoot = KRegions.KStackPane("", view.get());
 
-        pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        VBox.setVgrow(pane, Priority.ALWAYS);
-        HBox.setHgrow(pane, Priority.ALWAYS);
+        playRoot.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        VBox.setVgrow(playRoot, Priority.ALWAYS);
+        HBox.setHgrow(playRoot, Priority.ALWAYS);
 
-        view.addListener((obs, oldView, newView) -> pane.getChildren().setAll(newView));
+        playRoot.setFocusTraversable(true);
 
-        return pane;
+        view.addListener((obs, oldView, newView) -> {
+            playRoot.getChildren().setAll(newView);
+            Platform.runLater(playRoot::requestFocus);
+        });
+
+        return playRoot;
     }
 }

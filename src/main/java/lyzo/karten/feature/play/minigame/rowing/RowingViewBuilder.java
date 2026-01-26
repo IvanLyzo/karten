@@ -80,27 +80,26 @@ public class RowingViewBuilder extends MinigameViewBuilder {
         gc.clearRect(0, 0, w, h);
 
         // paint background
-        gc.setFill(Color.BLACK);
+        gc.setFill(Color.BLUE);
         gc.fillRect(0, 0, w, h);
 
+        // paint details
+        gameState.details.forEach(this::drawObj);
+
         // paint players
-        for (RowingGameState.Player player : gameState.players) {
-            drawPlayer(player);
-        }
+        gameState.players.forEach(this::drawObj);
     }
 
-    private void drawPlayer(RowingGameState.Player player) {
-        // save local references to size
-        double w = canvasWidth.get();
+    private void drawObj(RowingGameState.GameObject obj) {
+        // save local references to canvas size
         double h = canvasHeight.get();
 
         // skip drawing if player not on screen
-        if (player.bounds.getY() + player.bounds.getH() < 0 || player.bounds.getY() > h) {
+        if (obj.bounds.getY() + obj.bounds.getH() < 0 || obj.bounds.getY() > h) {
             return;
         }
 
-        // draw player at position
-        gc.setFill(Color.WHITE);
-        gc.fillRect(player.bounds.getX(), player.bounds.getY(), player.bounds.getW(), player.bounds.getH());
+        // draw player
+        obj.draw(gc);
     }
 }

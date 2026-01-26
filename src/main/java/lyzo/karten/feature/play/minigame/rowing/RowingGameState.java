@@ -1,7 +1,10 @@
 package lyzo.karten.feature.play.minigame.rowing;
 
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import lyzo.karten.utility.Bounds2D;
+import lyzo.karten.utility.FileCrawler;
 import lyzo.karten.utility.structures.minigame.GameState;
 
 import java.util.*;
@@ -11,6 +14,8 @@ public class RowingGameState extends GameState {
     public final int courseLength;
     public final int playerCount;
 
+    public final List<GameObject> details = new ArrayList<>();
+
     public final Player user;
     public final List<Player> players = new ArrayList<>();
 
@@ -19,12 +24,19 @@ public class RowingGameState extends GameState {
         this.courseLength = courseLength;
         this.playerCount = playerCount;
 
-        // init user player
-        user = new Player(0, "User player", 55, 110);
+        // init game objects
+        GameObject finishLine = new GameObject(FileCrawler.FINISH_LINE_GRPAHIC, 1480, 1184);
+        details.add(finishLine);
+
+        // init players
+        user = new Player(0, "User player", FileCrawler.BOAT_GRAPHIC, 55, 110);
         players.add(user);
 
-        initPlayerData();
+        for (int i = 1; i < playerCount; i++) {
+            players.add(new Player(i, "Player " + i, FileCrawler.BOAT_GRAPHIC, 80, 0));
+        }
 
+        // set up overlay system listeners
         overlayOn.addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 overlayCountdown.set(FLASHCARD_COUNTDOWN);
@@ -38,28 +50,38 @@ public class RowingGameState extends GameState {
         });
     }
 
-    private void initPlayerData() {
-        // init players
-        for (int i = 1; i < playerCount; i++) {
-            players.add(new Player(i, "Player " + i, 80, 0));
-        }
-    }
-
-    public void initPlayerPositions(Point2D... pos) {
-        if (pos.length != playerCount) {
+    public void initPositions(List<? extends GameObject> objs, Point2D... pos) {
+        if (pos.length != objs.size()) {
             throw new RuntimeException("incorrect number of initial positions (" + pos.length + ") given for player count (" + playerCount + ").");
         }
 
         for (int i = 0; i < pos.length; i++) {
-            players.get(i).bounds.setX(pos[i].getX());
-            players.get(i).bounds.setY(pos[i].getY());
+            objs.get(i).bounds.setX(pos[i].getX());
+            objs.get(i).bounds.setY(pos[i].getY());
         }
     }
 
-    public static class Player {
-        // player constants
-        public static final double WIDTH = 100f;
-        public static final double HEIGHT = 200f;
+    public static class GameObject {
+        public final Image graphic;
+        public Bounds2D bounds;
+
+        public GameObject(Image graphic, int width, int height) {
+            this.graphic = graphic;
+            bounds = new Bounds2D(0, 0, width, height);
+        }
+
+        public void move(double dy) {
+            bounds.setY(bounds.getY() + dy);
+        }
+
+        public void draw(GraphicsContext gc) {
+            gc.drawImage(graphic, bounds.getX(), bounds.getY(), bounds.getW(), bounds.getH());
+        }
+    }
+
+    public static class Player extends GameObject {
+        public static final int WIDTH = 100;
+        public static final int HEIGHT = 200;
 
         public final int id;
         public final String name;
@@ -72,9 +94,9 @@ public class RowingGameState extends GameState {
         public double boostEffect = 0;
         public double timeSinceBoost = 0;
 
-        public Bounds2D bounds = new Bounds2D(0, 0, WIDTH, HEIGHT);
+        public Player(int id, String name, Image graphic, int speed, int boostStrength) {
+            super(graphic, WIDTH, HEIGHT);
 
-        public Player(int id, String name, int speed, int boostStrength) {
             this.id = id;
             this.name = name;
 
@@ -82,8 +104,9 @@ public class RowingGameState extends GameState {
             this.boostStrength = boostStrength;
         }
 
+        @Override
         public void move(double dy) {
-            bounds.setY(bounds.getY() + dy);
+            super.move(dy);
             metersRowed += Math.abs(dy);
         }
     }

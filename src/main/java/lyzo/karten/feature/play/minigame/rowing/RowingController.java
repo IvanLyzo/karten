@@ -72,7 +72,14 @@ public class RowingController extends MinigameController {
 
     @Override
     public void initGame() {
+        initDetailPositions();
         initPlayerPositions();
+    }
+
+    private void initDetailPositions() {
+        Point2D finishLinePosition = new Point2D(0, canvasHeight.get() - gameState.courseLength - gameState.details.getFirst().bounds.getH());
+
+        gameState.initPositions(gameState.details, finishLinePosition);
     }
 
     private void initPlayerPositions() {
@@ -87,7 +94,7 @@ public class RowingController extends MinigameController {
             positions[i] = new Point2D(leftBound, height);
         }
 
-        gameState.initPlayerPositions(positions);
+        gameState.initPositions(gameState.players, positions);
     }
 
     @Override
@@ -99,9 +106,11 @@ public class RowingController extends MinigameController {
         // update next flashcard cycle countdown
         gameState.overlayCountdown.set(gameState.overlayCountdown.get() - delta);
 
-        // move players this frame
+        // update player position and re-calculate player offset for this frame
         updateBoost(gameState.user, delta);
         double playerOffset = -(gameState.user.speed + gameState.user.boostEffect) * delta;
+
+        gameState.details.forEach(detail -> detail.move(-playerOffset));
 
         gameState.players.forEach(player -> movePlayer(player, delta, playerOffset));
     }
@@ -135,7 +144,7 @@ public class RowingController extends MinigameController {
         double dy = -(player.speed + player.boostEffect) * delta;
         player.move(dy - playerOffset);
 
-        // check if reached the end, end game if have
+        // check if reached the end, end game if yes
         if (player.metersRowed >= gameState.courseLength) {
             gameLoop.stop();
             winCondition.accept(player.id == 0);

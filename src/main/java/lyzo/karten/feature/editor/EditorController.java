@@ -10,8 +10,8 @@ public class EditorController implements Controller {
 
     private final AppModel appModel;
 
-    private final ObjectProperty<DeckCreation> deckChanges = new SimpleObjectProperty<>();
-    private final ObjectProperty<CardCreation> cardChanges = new SimpleObjectProperty<>();
+    private final ObjectProperty<Deck.CreateData> deckChanges = new SimpleObjectProperty<>();
+    private final ObjectProperty<Card.CreateData> cardChanges = new SimpleObjectProperty<>();
 
     public EditorController(AppModel appModel) {
         this.appModel = appModel;

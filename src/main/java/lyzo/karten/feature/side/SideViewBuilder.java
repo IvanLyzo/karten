@@ -14,27 +14,22 @@ import lyzo.karten.utility.ui.KRegions;
 // side menu view builder
 public class SideViewBuilder implements ViewBuilder {
 
-    private final Runnable homeAction;
-    private final Runnable editorAction;
-    private final Runnable libraryAction;
-    private final Runnable settingsAction;
+    private final Runnable[] actions;
 
-    public SideViewBuilder(Runnable homeAction, Runnable editorAction, Runnable libraryAction, Runnable settingsAction) {
-        this.homeAction = homeAction;
-        this.editorAction = editorAction;
-        this.libraryAction = libraryAction;
-        this.settingsAction = settingsAction;
+    public SideViewBuilder(Runnable... actions) {
+        this.actions = actions;
     }
 
     @Override
     public Region build() {
         // creates vertical pane, fills it with nav options
         VBox pane = KRegions.KVerticalBox("", Pos.TOP_LEFT, 10,
-                menuItem("KARTEN", homeAction),
-                menuItem("Editor", editorAction),
-                menuItem("Library", libraryAction),
+                menuItem("KARTEN", actions[0]),
+                menuItem("Editor", actions[1]),
+                menuItem("Library", actions[2]),
                 separator(),
-                menuItem("Settings", settingsAction)
+                menuItem("Profile", actions[3]),
+                menuItem("Settings", actions[4])
         );
 
         // set spacing and padding

@@ -1,7 +1,6 @@
-package lyzo.karten.database;
+package lyzo.karten.disk.database;
 
 import lyzo.karten.mapper.Mapper;
-import lyzo.karten.model.CardCreation;
 import lyzo.karten.utility.exceptions.SQLExecutionException;
 import lyzo.karten.utility.logger.Logger;
 

@@ -11,9 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import lyzo.karten.model.Card;
-import lyzo.karten.model.CardCreation;
 import lyzo.karten.model.Deck;
-import lyzo.karten.model.DeckCreation;
 import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
@@ -22,10 +20,10 @@ public class EditorViewBuilder implements ViewBuilder {
 
     // passed-down properties/observables
     private final ObjectProperty<Deck> deck;
-    private final ObjectProperty<DeckCreation> deckChanges;
+    private final ObjectProperty<Deck.CreateData> deckChanges;
     private final ObservableList<Card> deckCards;
     private final ObjectProperty<Card> activeCard;
-    private final ObjectProperty<CardCreation> cardChanges;
+    private final ObjectProperty<Card.CreateData> cardChanges;
 
     // passed-down events
     private final Runnable newCardAction;
@@ -33,8 +31,8 @@ public class EditorViewBuilder implements ViewBuilder {
     // local variables
     private final BooleanProperty previewFront = new SimpleBooleanProperty(true);
 
-    public EditorViewBuilder(ObjectProperty<Deck> deck, ObjectProperty<DeckCreation> deckChanges,
-                             ObservableList<Card> deckCards, ObjectProperty<Card> activeCard, ObjectProperty<CardCreation> cardChanges,
+    public EditorViewBuilder(ObjectProperty<Deck> deck, ObjectProperty<Deck.CreateData> deckChanges,
+                             ObservableList<Card> deckCards, ObjectProperty<Card> activeCard, ObjectProperty<Card.CreateData> cardChanges,
                              Runnable newCardAction) {
         // save passed-down information
         this.deck = deck;
@@ -75,7 +73,7 @@ public class EditorViewBuilder implements ViewBuilder {
         HBox nameBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, name, editName);
         nameBox.setMaxWidth(Region.USE_PREF_SIZE);
 
-        editName.setOnAction(_ -> KControls.editMode(nameBox, name, s -> deckChanges.set(new DeckCreation(s, deck.get().description()))));
+        editName.setOnAction(_ -> KControls.editMode(nameBox, name, s -> deckChanges.set(new Deck.CreateData(s, deck.get().description()))));
 
         // deck description box
         Label description = KControls.KLabel("heading2-shadow", deck.get().description());
@@ -92,7 +90,7 @@ public class EditorViewBuilder implements ViewBuilder {
         HBox descriptionBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, description, editDescription);
         descriptionBox.setMaxWidth(Region.USE_PREF_SIZE);
 
-        editDescription.setOnAction(e -> KControls.editMode(descriptionBox, description, s -> deckChanges.set(new DeckCreation(deck.get().name(), s))));
+        editDescription.setOnAction(e -> KControls.editMode(descriptionBox, description, s -> deckChanges.set(new Deck.CreateData(deck.get().name(), s))));
 
         // header box
         HBox headerBox = KRegions.KHorizontalBox("", Pos.CENTER_LEFT, 50, nameBox, descriptionBox);
@@ -187,12 +185,12 @@ public class EditorViewBuilder implements ViewBuilder {
                 Card card = activeCard.get();
                 if (previewFront.get()) {
                     KControls.editMode(cardPreview, content, s -> {
-                        CardCreation newCard = new CardCreation(card.deckId(), card.position(), s, card.back());
+                        Card.CreateData newCard = new Card.CreateData(card.deckId(), card.position(), s, card.back());
                         cardChanges.set(newCard);
                     });
                 } else {
                     KControls.editMode(cardPreview, content, s -> {
-                        CardCreation newCard = new CardCreation(card.deckId(), card.position(), card.front(), s);
+                        Card.CreateData newCard = new Card.CreateData(card.deckId(), card.position(), card.front(), s);
                         cardChanges.set(newCard);
                     });
                 }

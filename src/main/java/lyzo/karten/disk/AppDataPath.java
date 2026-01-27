@@ -1,4 +1,4 @@
-package lyzo.karten.database;
+package lyzo.karten.disk;
 
 import java.io.IOException;
 import java.nio.file.Files;

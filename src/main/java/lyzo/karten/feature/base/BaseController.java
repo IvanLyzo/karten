@@ -7,16 +7,19 @@ import lyzo.karten.feature.editor.EditorController;
 import lyzo.karten.feature.home.HomeController;
 import lyzo.karten.feature.library.LibraryController;
 import lyzo.karten.feature.play.PlayController;
+import lyzo.karten.feature.profile.ProfileController;
 import lyzo.karten.feature.side.SideController;
 import lyzo.karten.model.AppModel;
+import lyzo.karten.model.UserModel;
 import lyzo.karten.utility.structures.Controller;
 import lyzo.karten.utility.logger.Logger;
 
 // base controller for the entire application; handles most of the root logic
 public class BaseController implements Controller {
 
-    // application model
+    // models
     private final AppModel appModel;
+    private final UserModel userModel;
 
     // region container for side view
     private final ObjectProperty<Region> sideView = new SimpleObjectProperty<>();
@@ -24,12 +27,13 @@ public class BaseController implements Controller {
     // region container for main view
     private final ObjectProperty<Region> mainView = new SimpleObjectProperty<>();
 
-    public BaseController(AppModel appModel) {
-        // save appModel
+    public BaseController(AppModel appModel, UserModel userModel) {
+        // save models
         this.appModel = appModel;
+        this.userModel = userModel;
 
         // set side view to default controller build view
-        sideView.set(new SideController(this::homeAction, this::editorAction, this::libraryAction, this::settingsAction).buildView());
+        sideView.set(new SideController(this::homeAction, this::editorAction, this::libraryAction, this::profileAction, this::settingsAction).buildView());
         Logger.log("Set sideView to SideController.build()", Logger.INFO);
 
         // set main view to default controller build view
@@ -70,6 +74,12 @@ public class BaseController implements Controller {
     private void editorAction() {
         Logger.log("Editor action, set main view to editor controller build view based on active deck", Logger.INFO);
         mainView.set(new EditorController(appModel).buildView());
+    }
+
+    // display profile main view
+    private void profileAction() {
+        Logger.log("Profile action, set main view to profile controller build view based on active profile", Logger.INFO);
+        mainView.set(new ProfileController(userModel).buildView());
     }
 
     // display settings main view (NOT IMPLEMENTED)

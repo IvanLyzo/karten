@@ -6,27 +6,16 @@ import lyzo.karten.utility.structures.Controller;
 // controller for handling side menu action (mostly navigation)
 public class SideController implements Controller {
 
-    private final Runnable homeAction;
-    private final Runnable editorAction;
-    private final Runnable libraryAction;
-    private final Runnable settingsAction;
+    private final Runnable[] actions;
 
-    public SideController(Runnable homeAction,
-                          Runnable editorAction,
-                          Runnable libraryAction,
-                          Runnable settingsAction) {
-
-        // save passed-down events
-        this.homeAction = homeAction;
-        this.editorAction = editorAction;
-        this.libraryAction = libraryAction;
-        this.settingsAction = settingsAction;
+    public SideController(Runnable... actions) {
+        this.actions = actions;
     }
 
     @Override
     public Region buildView() {
         // create a base view builder
-        SideViewBuilder viewBuilder = new SideViewBuilder(homeAction, editorAction, libraryAction, settingsAction);
+        SideViewBuilder viewBuilder = new SideViewBuilder(actions);
 
         // display it
         return viewBuilder.build();

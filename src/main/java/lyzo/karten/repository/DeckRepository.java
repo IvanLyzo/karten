@@ -1,9 +1,8 @@
 package lyzo.karten.repository;
 
-import lyzo.karten.database.DBAccess;
+import lyzo.karten.disk.database.DBAccess;
 import lyzo.karten.mapper.DeckMapper;
 import lyzo.karten.model.Deck;
-import lyzo.karten.model.DeckCreation;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -29,13 +28,13 @@ public class DeckRepository {
         return dbAccess.executeQuery(sql, new DeckMapper(), id).getFirst();
     }
 
-    public int insertDeck(DeckCreation deckCreation) {
+    public int insertDeck(Deck.CreateData deckCreation) {
         String sql = "INSERT INTO decks (name, description) VALUES (?, ?)";
 
         return dbAccess.executeInsert(sql, deckCreation.name(), deckCreation.description());
     }
 
-    public Deck updateDeck(int deckId, DeckCreation newDeck) {
+    public Deck updateDeck(int deckId, Deck.CreateData newDeck) {
         String sql = "UPDATE decks SET last_edited = ?, name = ?, description = ? WHERE id = ?";
 
         dbAccess.executeUpdate(sql, Timestamp.from(Instant.now()), newDeck.name(), newDeck.description(), deckId);

@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import lyzo.karten.utility.Bounds2D;
-import lyzo.karten.utility.FileCrawler;
+import lyzo.karten.disk.file.ResourceAccess;
 import lyzo.karten.utility.structures.minigame.GameState;
 
 import java.util.*;
@@ -25,15 +25,15 @@ public class RowingGameState extends GameState {
         this.playerCount = playerCount;
 
         // init game objects
-        GameObject finishLine = new GameObject(FileCrawler.FINISH_LINE_GRPAHIC, 1480, 1184);
+        GameObject finishLine = new GameObject(ResourceAccess.FINISH_LINE_GRPAHIC, 1480, 1184);
         details.add(finishLine);
 
         // init players
-        user = new Player(0, "User player", FileCrawler.BOAT_GRAPHIC, 55, 110);
+        user = new Player(0, "User player", ResourceAccess.RED_BOAT_GRAPHIC, 55, 110);
         players.add(user);
 
         for (int i = 1; i < playerCount; i++) {
-            players.add(new Player(i, "Player " + i, FileCrawler.BOAT_GRAPHIC, 80, 0));
+            players.add(new Player(i, "Player " + i, ResourceAccess.RED_BOAT_GRAPHIC, 80, 0));
         }
 
         // set up overlay system listeners

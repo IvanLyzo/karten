@@ -2,22 +2,17 @@ package lyzo.karten.model;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import lyzo.karten.repository.CardRepository;
 import lyzo.karten.repository.DeckRepository;
-import lyzo.karten.utility.logger.Logger;
 
 // main app model, creating at runtime for each instance
 // loaded from and saved to database
 public class AppModel {
 
-    // deck repository for database connection
+    // deck and card repository for database connection
     private final DeckRepository deckRepository;
-
-    // card repository for database connection
     private final CardRepository cardRepository;
 
     // observable list of all user-created decks
@@ -30,7 +25,7 @@ public class AppModel {
 
     // add one deck to collection (for CREATE operations)
     public Deck addDeck() {
-        int id = deckRepository.insertDeck(new DeckCreation("New Deck #" + (decks.size() + 1), "Your very own deck of flashcards!"));
+        int id = deckRepository.insertDeck(new Deck.CreateData("New Deck #" + (decks.size() + 1), "Your very own deck of flashcards!"));
 
         Deck deck = deckRepository.getDeckById(id);
         decks.add(deck);
@@ -52,7 +47,7 @@ public class AppModel {
     }
 
     // replace deck for updating deck entries
-    public void updateDeck(DeckCreation newDeck) {
+    public void updateDeck(Deck.CreateData newDeck) {
         // update entry in database
         Deck deck = deckRepository.updateDeck(activeDeck.get().id(), newDeck);
 
@@ -91,7 +86,7 @@ public class AppModel {
     }
 
     public Card addCard() {
-        int id = cardRepository.insertCard(new CardCreation(activeDeck.get().id(), deckCards.size(), "Front Content", "Back Content"));
+        int id = cardRepository.insertCard(new Card.CreateData(activeDeck.get().id(), deckCards.size(), "Front Content", "Back Content"));
 
         Card card = cardRepository.getCardById(id);
 
@@ -111,7 +106,7 @@ public class AppModel {
     }
 
     // replace card for updating card entries
-    public void updateCard(CardCreation newCard) {
+    public void updateCard(Card.CreateData newCard) {
         // update entry in database
         Card card = cardRepository.updateCard(activeCard.get().id(), newCard);
         System.out.println("new entry card: " + card);

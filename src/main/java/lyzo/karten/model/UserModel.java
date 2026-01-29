@@ -4,7 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import lyzo.karten.disk.file.FileAccess;
+import lyzo.karten.io.disk.DiskFileAccess;
 
 public class UserModel {
 
@@ -19,12 +19,12 @@ public class UserModel {
         }
     }
 
-    private final FileAccess fileAccess;
+    private final DiskFileAccess fileAccess;
 
-    public UserModel(FileAccess fileAccess) {
+    public UserModel(DiskFileAccess fileAccess) {
         this.fileAccess = fileAccess;
 
-        fileAccess.createProfile("default");
+        fileAccess.createFile("default");
     }
 
     private final StringProperty username = new SimpleStringProperty("default");

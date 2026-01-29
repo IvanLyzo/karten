@@ -1,4 +1,4 @@
-package lyzo.karten.disk.file;
+package lyzo.karten.io.disk;
 
 import lyzo.karten.model.UserModel;
 
@@ -10,34 +10,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FileAccess {
+public class DiskFileAccess {
+
+    public enum DIRECTORIES {
+
+        PROFILES("profiles");
+
+        public final String dirName;
+
+        DIRECTORIES(String dirName) {
+            this.dirName = dirName;
+        }
+    }
 
     public final Path dirPath;
     public Path activeFilepath;
 
-    public FileAccess(Path appDataPath) {
-        dirPath = appDataPath.resolve("profiles");
+    public DiskFileAccess(Path appDataPath) {
+        dirPath = appDataPath;
+
         try {
-            Files.createDirectories(dirPath);
+            for (DIRECTORIES value : DIRECTORIES.values()) {
+                Files.createDirectories(dirPath.resolve(value.dirName));
+            }
         } catch (IOException e) {
-            throw new RuntimeException("An I/O exception occurred: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public void createProfile(String username) {
+    public void createFile(String dir, String username) {
         String filename = username + ".txt";
 
         try {
-            activeFilepath = dirPath.resolve(filename);
+            activeFilepath = dir.isEmpty() ? dirPath : dirPath.resolve(dir);
+            activeFilepath = activeFilepath.resolve(filename);
 
-            List<String> lines = new ArrayList<>();
-            lines.add("[" + UserModel.PROPERTY.BALANCE.uid + "]:");
+            if (!Files.exists(activeFilepath)) {
+                List<String> lines = new ArrayList<>();
+                lines.add("[" + UserModel.PROPERTY.BALANCE.uid + "]:");
 
-            Files.write(activeFilepath, lines);
+                Files.write(activeFilepath, lines);
+            }
         } catch (FileAlreadyExistsException e) {
             throw new RuntimeException("File already exists");
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException("An I/O exception occurred: " + e.getMessage());
         }
     }

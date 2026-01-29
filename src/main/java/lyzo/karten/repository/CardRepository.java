@@ -1,6 +1,6 @@
 package lyzo.karten.repository;
 
-import lyzo.karten.disk.database.DBAccess;
+import lyzo.karten.io.disk.DBAccess;
 import lyzo.karten.mapper.CardMapper;
 import lyzo.karten.model.Card;
 

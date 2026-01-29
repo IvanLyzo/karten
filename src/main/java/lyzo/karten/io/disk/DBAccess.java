@@ -1,4 +1,4 @@
-package lyzo.karten.disk.database;
+package lyzo.karten.io.disk;
 
 import lyzo.karten.mapper.Mapper;
 import lyzo.karten.utility.exceptions.SQLExecutionException;

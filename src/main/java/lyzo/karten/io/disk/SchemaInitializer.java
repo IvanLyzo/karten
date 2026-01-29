@@ -1,4 +1,4 @@
-package lyzo.karten.disk.database;
+package lyzo.karten.io.disk;
 
 public class SchemaInitializer {
 

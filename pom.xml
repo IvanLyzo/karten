@@ -6,7 +6,7 @@
 
     <groupId>lyzo</groupId>
     <artifactId>karten</artifactId>
-    <version>0.1.14</version>
+    <version>0.1.15</version>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>

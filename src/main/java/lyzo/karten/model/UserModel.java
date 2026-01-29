@@ -4,7 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import lyzo.karten.io.disk.DiskFileAccess;
+import lyzo.karten.handler.ProfileHandler;
 
 public class UserModel {
 
@@ -19,12 +19,12 @@ public class UserModel {
         }
     }
 
-    private final DiskFileAccess fileAccess;
+    private final ProfileHandler profileHandler;
 
-    public UserModel(DiskFileAccess fileAccess) {
-        this.fileAccess = fileAccess;
+    public UserModel(ProfileHandler profileHandler) {
+        this.profileHandler = profileHandler;
 
-        fileAccess.createFile("default");
+        profileHandler.createProfileFile("default");
     }
 
     private final StringProperty username = new SimpleStringProperty("default");
@@ -41,6 +41,6 @@ public class UserModel {
 
     public void changeBalance(int d) {
         balance.set(balance.get() + d);
-        fileAccess.setProperty(PROPERTY.BALANCE, balance.get());
+        profileHandler.setProperty(PROPERTY.BALANCE, balance.get());
     }
 }

@@ -3,10 +3,11 @@ package lyzo.karten;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import lyzo.karten.handler.ProfileHandler;
 import lyzo.karten.io.AppDataPath;
 import lyzo.karten.io.disk.DBAccess;
-import lyzo.karten.io.disk.DiskFileAccess;
 import lyzo.karten.feature.base.BaseController;
+import lyzo.karten.io.disk.FileAccess;
 import lyzo.karten.model.AppModel;
 import lyzo.karten.model.UserModel;
 import lyzo.karten.repository.CardRepository;
@@ -47,11 +48,14 @@ public class Application extends javafx.application.Application {
         // create DBAccess object
         DBAccess dbAccess = new DBAccess(appDataDir);
 
+        // create FileAccess object
+        FileAccess fileAccess = new FileAccess(appDataDir);
+
         // create app model layer
         AppModel appModel = new AppModel(new DeckRepository(dbAccess), new CardRepository(dbAccess));
 
         // create user model layer
-        UserModel userModel = new UserModel(new DiskFileAccess(appDataDir));
+        UserModel userModel = new UserModel(new ProfileHandler(fileAccess));
 
         // create the base controller (actually controls everything, application just does set up)
         BaseController controller = new BaseController(appModel, userModel);

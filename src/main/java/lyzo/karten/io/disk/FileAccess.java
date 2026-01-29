@@ -26,6 +26,10 @@ public class FileAccess {
         this.appDataPath = appDataPath;
     }
 
+    public Path getAppDataPath() {
+        return appDataPath;
+    }
+
     public List<String> readFile(Path relPath, String filename) {
         Path filepath = appDataPath.resolve(relPath).resolve(filename);
         try {
@@ -35,21 +39,19 @@ public class FileAccess {
         }
     }
 
-    public Path writeFile(Path relPath, String filename, String... initialContent) {
+    public void writeFile(Path relPath, String filename, String... content) {
         Path fileDir = appDataPath.resolve(relPath);
 
         try {
             Files.createDirectories(fileDir);
 
-            List<String> lines = new ArrayList<>(List.of(initialContent));
+            List<String> lines = new ArrayList<>(List.of(content));
             Files.write(fileDir.resolve(filename), lines);
         } catch (FileAlreadyExistsException e) {
-            return fileDir;
+            throw new RuntimeException(e);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("An I/O exception occurred: " + e.getMessage());
         }
-
-        return fileDir;
     }
 }

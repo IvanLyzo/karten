@@ -1,39 +1,51 @@
 package lyzo.karten.handler;
 
 import lyzo.karten.io.disk.FileAccess;
-import lyzo.karten.model.UserModel;
 
 import java.nio.file.Path;
 import java.util.List;
 
 public class ProfileHandler {
 
+    public enum PROPERTIES {
+
+        BALANCE("BALANCE");
+
+        public final String uid;
+
+        PROPERTIES(String uid) {
+            this.uid = uid;
+        }
+    }
+
     private final FileAccess fileAccess;
 
-    private Path activeProfileDir;
-    private String filename;
+    private final Path profileDir;
+    private String activeProfile;
 
     public ProfileHandler(FileAccess fileAccess) {
         this.fileAccess = fileAccess;
+        profileDir = fileAccess.getAppDataPath().resolve("profiles");
     }
 
     public void createProfileFile(String name) {
-        activeProfileDir = fileAccess.writeFile(Path.of("profiles"), name + ".profile", initProfileFile());
-        filename = name + ".profile";
+        activeProfile = name + ".profile";
+
+        fileAccess.writeFile(profileDir, activeProfile, initProfileFile());
     }
 
     private String[] initProfileFile() {
-        String[] lines = new String[UserModel.PROPERTY.values().length];
+        String[] lines = new String[PROPERTIES.values().length];
 
-        for (UserModel.PROPERTY value : UserModel.PROPERTY.values()) {
+        for (PROPERTIES value : PROPERTIES.values()) {
             lines[value.ordinal()] = "[" + value.uid + "]:";
         }
 
         return lines;
     }
 
-    public void setProperty(UserModel.PROPERTY property, int value) {
-        List<String> lines = fileAccess.readFile(activeProfileDir, filename);
+    public void setProperty(PROPERTIES property, int value) {
+        List<String> lines = fileAccess.readFile(profileDir, activeProfile);
 
         lines.replaceAll(s -> {
             if (s.contains(property.uid)) {
@@ -42,6 +54,6 @@ public class ProfileHandler {
             return s;
         });
 
-        fileAccess.writeFile(activeProfileDir, filename, lines.toArray(new String[0]));
+        fileAccess.writeFile(profileDir, activeProfile, lines.toArray(new String[0]));
     }
 }

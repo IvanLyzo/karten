@@ -18,6 +18,6 @@ public class ProfileController implements Controller {
     }
 
     public void addMoneyAction() {
-        userModel.changeBalance(10);
+        userModel.addBalance(10);
     }
 }

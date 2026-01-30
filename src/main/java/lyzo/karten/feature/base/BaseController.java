@@ -10,6 +10,7 @@ import lyzo.karten.feature.play.PlayController;
 import lyzo.karten.feature.preferences.PreferencesController;
 import lyzo.karten.feature.profile.ProfileController;
 import lyzo.karten.feature.side.SideController;
+import lyzo.karten.feature.themes.ThemesController;
 import lyzo.karten.model.AppModel;
 import lyzo.karten.model.UserModel;
 import lyzo.karten.utility.structures.Controller;
@@ -33,7 +34,7 @@ public class BaseController implements Controller {
         this.userModel = userModel;
 
         // set side view to default controller build view
-        sideView.set(new SideController(this::homeAction, this::editorAction, this::libraryAction, this::profileAction, this::preferencesAction).buildView());
+        sideView.set(new SideController(this::homeAction, this::editorAction, this::libraryAction, this::profileAction, this::shopAction, this::themesAction, this::preferencesAction).buildView());
 
         // set main view to default controller build view
         mainView.set(new LibraryController(appModel, this::playAction, this::editorAction).buildView());
@@ -72,6 +73,16 @@ public class BaseController implements Controller {
     // display profile main view
     private void profileAction() {
         mainView.set(new ProfileController(userModel).buildView());
+    }
+
+    // display shop main view
+    private void shopAction() {
+
+    }
+
+    // display themes main view
+    private void themesAction() {
+        mainView.set(new ThemesController(userModel).buildView());
     }
 
     // display preferences main view

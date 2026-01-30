@@ -1,9 +1,9 @@
 package lyzo.karten.model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.Pair;
 import lyzo.karten.handler.ProfileHandler;
 import lyzo.karten.handler.ThemeHandler;
 
@@ -17,7 +17,9 @@ public class UserModel {
         this.themeHandler = themeHandler;
 
         profileHandler.createProfileFile(username.get());
-        themeHandler.createThemeFile(activeTheme.get());
+
+        themeHandler.createThemeFile(themeName.get());
+        activeTheme.setAll(themeHandler.getThemeFile());
     }
 
     private final StringProperty username = new SimpleStringProperty("default");
@@ -37,14 +39,24 @@ public class UserModel {
         profileHandler.setProperty(ProfileHandler.PROPERTIES.BALANCE, balance.get());
     }
 
-    private final StringProperty activeTheme = new SimpleStringProperty("custom");
+    private final StringProperty themeName = new SimpleStringProperty("custom");
+    private final ObservableList<Pair<String, String>> activeTheme = FXCollections.observableArrayList();
 
-    public StringProperty getActiveTheme() {
+    public StringProperty getThemeName() {
+        return themeName;
+    }
+
+    public void setTheme(String name) {
+        themeName.set(name);
+
+        themeHandler.setThemeFile(themeName.get());
+    }
+
+    public ObservableList<Pair<String, String>> getActiveTheme() {
         return activeTheme;
     }
 
-    public void setActiveTheme(String name) {
-        activeTheme.set(name);
-        // TODO: add persistence
+    public void setThemeProperty(ThemeHandler.PROPERTIES property, String value) {
+        themeHandler.setProperty(property, value);
     }
 }

@@ -29,7 +29,10 @@ public class SideViewBuilder implements ViewBuilder {
                 menuItem("Library", actions[2]),
                 separator(),
                 menuItem("Profile", actions[3]),
-                menuItem("Settings", actions[4])
+                menuItem("Shop", actions[4]),
+                separator(),
+                menuItem("Themes", actions[5]),
+                menuItem("Preferences", actions[6])
         );
 
         // set spacing and padding

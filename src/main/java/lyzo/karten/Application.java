@@ -77,7 +77,8 @@ public class Application extends javafx.application.Application {
         Font.loadFont(Objects.requireNonNull(getClass().getResource("/fonts/PlusJakartaSans-Light.ttf")).toExternalForm(), 417);
     }
 
-    private void addStylesheet(String stylesheet) {
-        applicationSurface.getStylesheets().add(stylesheet);
+    private void addStylesheet(String oldCSS, String newCSS) {
+        applicationSurface.getStylesheets().removeIf(s -> s.equals(oldCSS));
+        applicationSurface.getStylesheets().add(newCSS);
     }
 }

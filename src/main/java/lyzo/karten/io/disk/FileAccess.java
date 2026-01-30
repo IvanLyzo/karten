@@ -9,17 +9,6 @@ import java.util.List;
 
 public class FileAccess {
 
-    public enum FILE_TYPE {
-        TXT(".txt"),
-        CSS(".css");
-
-        final String ext;
-
-        FILE_TYPE(String ext) {
-            this.ext = ext;
-        }
-    }
-
     private final Path appDataPath;
 
     public FileAccess(Path appDataPath) {
@@ -50,8 +39,7 @@ public class FileAccess {
         } catch (FileAlreadyExistsException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("An I/O exception occurred: " + e.getMessage());
+            throw new RuntimeException("An I/O exception occurred: " + e.getMessage(), e);
         }
     }
 }

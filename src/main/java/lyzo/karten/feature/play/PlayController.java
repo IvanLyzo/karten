@@ -6,15 +6,18 @@ import javafx.scene.layout.Region;
 import lyzo.karten.feature.play.minigame.rowing.RowingController;
 import lyzo.karten.feature.play.minigame.rowing.RowingGameState;
 import lyzo.karten.feature.play.minigame.rowing.RowingLobbyViewBuilder;
-import lyzo.karten.feature.play.minigame.rowing.RowingResultViewBuilder;
 import lyzo.karten.model.AppModel;
+import lyzo.karten.model.UserModel;
 import lyzo.karten.utility.structures.Controller;
 import lyzo.karten.utility.structures.minigame.GameState;
 import lyzo.karten.utility.structures.minigame.MinigameController;
 
+import java.util.List;
+
 public class PlayController implements Controller {
 
     private final AppModel appModel;
+    private final UserModel userModel;
 
     private final Runnable homeAction;
 
@@ -25,19 +28,14 @@ public class PlayController implements Controller {
     // region container for view
     private final ObjectProperty<Region> view = new SimpleObjectProperty<>();
 
-    public PlayController(AppModel appModel, Runnable homeAction) {
+    public PlayController(AppModel appModel, UserModel userModel, Runnable homeAction) {
         this.appModel = appModel;
+        this.userModel = userModel;
+
         this.homeAction = homeAction;
 
         view.set(new MinigameSelectionViewBuilder(this::rowingGameAction).build());
-
-        minigameController.addListener((_, _, newV) -> {
-            if (newV == null) {
-                view.set(new MinigameSelectionViewBuilder(this::rowingGameAction).build());
-            } else {
-                view.set(newV.buildView());
-            }
-        });
+        minigameController.addListener((_, _, newV) -> view.set(newV.buildView()));
     }
 
     @Override
@@ -54,7 +52,8 @@ public class PlayController implements Controller {
         view.set(new RowingLobbyViewBuilder(gameState, playEvent).build());
     }
 
-    private void winCondition(boolean won) {
-        view.set(new RowingResultViewBuilder(won).build());
+    private void winCondition(MinigameResultViewBuilder.MinigameResult result) {
+        view.set(new MinigameResultViewBuilder(result).build());
+        userModel.addBalance(result.moneyEarned());
     }
 }

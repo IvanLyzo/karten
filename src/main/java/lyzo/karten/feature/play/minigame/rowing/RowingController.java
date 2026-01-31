@@ -4,36 +4,32 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.geometry.Point2D;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
+import lyzo.karten.feature.play.MinigameResultViewBuilder;
 import lyzo.karten.model.AppModel;
 import lyzo.karten.utility.structures.minigame.MinigameController;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 public class RowingController extends MinigameController {
 
-    private final AppModel appModel;
     private final RowingGameState gameState;
+
+    private final Consumer<MinigameResultViewBuilder.MinigameResult> winCondition;
 
     private final DoubleProperty canvasWidth = new SimpleDoubleProperty(0);
     private final DoubleProperty canvasHeight = new SimpleDoubleProperty(0);
 
-    private final Consumer<Boolean> winCondition;
+    private final IntegerProperty index = new SimpleIntegerProperty(0);
 
     private Runnable drawGame;
     private AnimationTimer gameLoop;
 
-    private final StringProperty response = new SimpleStringProperty("");
-    private final IntegerProperty index = new SimpleIntegerProperty(0);
-
     public RowingController(AppModel appModel, RowingGameState gameState,
-                            Consumer<Boolean> winCondition) {
-        this.appModel = appModel;
+                            Consumer<MinigameResultViewBuilder.MinigameResult> winCondition) {
         this.gameState = gameState;
-
         this.winCondition = winCondition;
 
         gameState.activeCard.set(appModel.getDeckCards().getFirst());
@@ -48,7 +44,7 @@ public class RowingController extends MinigameController {
 
     @Override
     public Region buildView() {
-        RowingViewBuilder viewBuilder = new RowingViewBuilder(gameState, response, canvasWidth, canvasHeight);
+        RowingViewBuilder viewBuilder = new RowingViewBuilder(gameState, this::submitResponse, canvasWidth, canvasHeight);
         drawGame = viewBuilder::drawGame;
 
         Region region = viewBuilder.build();
@@ -56,13 +52,7 @@ public class RowingController extends MinigameController {
         Platform.runLater(this::initGame);
 
         Platform.runLater(region::requestFocus);
-        region.setOnMouseClicked(e -> region.requestFocus());
-
-        region.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (gameState.overlayOn.get() && event.getCode() == KeyCode.ENTER) {
-                submitResponse();
-            }
-        });
+        region.setOnMouseClicked(_ -> region.requestFocus());
 
         gameLoop = createLoop();
         gameLoop.start();
@@ -116,13 +106,13 @@ public class RowingController extends MinigameController {
     }
 
     @Override
-    public void submitResponse() {
+    public void submitResponse(String s) {
         gameState.overlayOn.set(false);
 
-        // activate boost
-        if (Objects.equals(response.get(), gameState.activeCard.get().back())) {
-            gameState.user.boostEffect = gameState.user.boostStrength;
-            gameState.user.timeSinceBoost = 0;
+        // activate boost if answer is correct
+        if (Objects.equals(s, gameState.activeCard.get().back())) {
+            gameState.user.activateBoost();
+            gameState.correctAnswers++;
         }
 
         index.set(index.get() + 1);
@@ -142,12 +132,13 @@ public class RowingController extends MinigameController {
     private void movePlayer(RowingGameState.Player player, double delta, double playerOffset) {
         // move player
         double dy = -(player.speed + player.boostEffect) * delta;
-        player.move(dy - playerOffset);
+        player.move(dy, playerOffset);
 
         // check if reached the end, end game if yes
         if (player.metersRowed >= gameState.courseLength) {
             gameLoop.stop();
-            winCondition.accept(player.id == 0);
+
+            winCondition.accept(gameState.getGameResult());
         }
     }
 

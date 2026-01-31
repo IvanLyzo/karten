@@ -1,8 +1,11 @@
 package lyzo.karten.feature.play.minigame.rowing;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.util.Pair;
+import lyzo.karten.feature.play.MinigameResultViewBuilder;
 import lyzo.karten.utility.Bounds2D;
 import lyzo.karten.io.resources.GraphicLoader;
 import lyzo.karten.utility.structures.minigame.GameState;
@@ -18,6 +21,8 @@ public class RowingGameState extends GameState {
 
     public final Player user;
     public final List<Player> players = new ArrayList<>();
+
+    public int correctAnswers = 0;
 
     public RowingGameState(int courseLength, int playerCount) {
         // save key data at initialization
@@ -37,13 +42,12 @@ public class RowingGameState extends GameState {
         }
 
         // set up overlay system listeners
-        overlayOn.addListener((observable, oldValue, newValue) -> {
+        overlayOn.addListener((_, _, newValue) -> {
             if (!newValue) {
                 overlayCountdown.set(FLASHCARD_COUNTDOWN);
             }
         });
-
-        overlayCountdown.addListener((observable, oldValue, newValue) -> {
+        overlayCountdown.addListener((_, _, newValue) -> {
             if (newValue.doubleValue() <= 0) {
                 overlayOn.set(true);
             }
@@ -61,7 +65,21 @@ public class RowingGameState extends GameState {
         }
     }
 
+    public MinigameResultViewBuilder.MinigameResult getGameResult() {
+        List<Map.Entry<String, Integer>> leaderboard = new ArrayList<>();
+
+        for (Player player : players) {
+            leaderboard.add(new AbstractMap.SimpleEntry<>(player.name, (int) Math.floor(player.metersRowed)));
+        }
+
+        Comparator<Map.Entry<String, Integer>> comparator = Map.Entry.comparingByValue();
+        leaderboard.sort(comparator);
+
+        return new MinigameResultViewBuilder.MinigameResult(leaderboard, correctAnswers * 10);
+    }
+
     public static class GameObject {
+
         public final Image graphic;
         public Bounds2D bounds;
 
@@ -70,7 +88,7 @@ public class RowingGameState extends GameState {
             bounds = new Bounds2D(0, 0, width, height);
         }
 
-        public void move(double dy) {
+        protected void move(double dy) {
             bounds.setY(bounds.getY() + dy);
         }
 
@@ -80,6 +98,7 @@ public class RowingGameState extends GameState {
     }
 
     public static class Player extends GameObject {
+
         public static final int WIDTH = 100;
         public static final int HEIGHT = 200;
 
@@ -104,10 +123,14 @@ public class RowingGameState extends GameState {
             this.boostStrength = boostStrength;
         }
 
-        @Override
-        public void move(double dy) {
-            super.move(dy);
+        public void move(double dy, double playerOffset) {
+            super.move(dy - playerOffset);
             metersRowed += Math.abs(dy);
+        }
+
+        public void activateBoost() {
+            boostEffect = boostStrength;
+            timeSinceBoost = 0;
         }
     }
 }

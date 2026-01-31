@@ -31,7 +31,7 @@ public class RowingLobbyViewBuilder implements ViewBuilder {
     }
 
     private void startGame() {
-        RowingGameState rowingGameState = new RowingGameState(200, 5);
+        RowingGameState rowingGameState = new RowingGameState(1000, 5);
         gameState.set(rowingGameState);
 
         playGameAction.run();

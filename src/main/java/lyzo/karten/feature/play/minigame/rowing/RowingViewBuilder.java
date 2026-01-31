@@ -1,30 +1,39 @@
 package lyzo.karten.feature.play.minigame.rowing;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.StringProperty;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
+import lyzo.karten.utility.structures.minigame.GameState;
 import lyzo.karten.utility.structures.minigame.MinigameViewBuilder;
 import lyzo.karten.utility.ui.KRegions;
+
+import java.util.function.Consumer;
 
 public class RowingViewBuilder extends MinigameViewBuilder {
 
     private final RowingGameState gameState;
-
-    private final StringProperty response;
+    private final Consumer<String> submitFlashcardAction;
 
     private final DoubleProperty canvasWidth;
     private final DoubleProperty canvasHeight;
 
     private GraphicsContext gc;
+    private Timeline timeline;
 
-    public RowingViewBuilder(RowingGameState gameState, StringProperty response,
-                             DoubleProperty canvasWidth, DoubleProperty canvasHeight) {
+    public RowingViewBuilder(RowingGameState gameState, Consumer<String> submitFlashcardAction, DoubleProperty canvasWidth, DoubleProperty canvasHeight) {
+
         this.gameState = gameState;
-        this.response = response;
+        this.submitFlashcardAction = submitFlashcardAction;
 
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
@@ -43,7 +52,7 @@ public class RowingViewBuilder extends MinigameViewBuilder {
         buildCanvas(pane);
 
         // build overlay
-        buildOverlay(pane, gameState, response);
+        buildOverlay(pane, gameState);
 
         return pane;
     }
@@ -84,13 +93,13 @@ public class RowingViewBuilder extends MinigameViewBuilder {
         gc.fillRect(0, 0, w, h);
 
         // paint details
-        gameState.details.forEach(this::drawObj);
+        gameState.details.forEach(this::drawGameObject);
 
         // paint players
-        gameState.players.forEach(this::drawObj);
+        gameState.players.forEach(this::drawGameObject);
     }
 
-    private void drawObj(RowingGameState.GameObject obj) {
+    private void drawGameObject(RowingGameState.GameObject obj) {
         // save local references to canvas size
         double h = canvasHeight.get();
 
@@ -101,5 +110,29 @@ public class RowingViewBuilder extends MinigameViewBuilder {
 
         // draw player
         obj.draw(gc);
+    }
+
+    public void buildOverlay(StackPane parent, GameState gameState) {
+        super.buildOverlay(parent, gameState, submitFlashcardAction);
+
+        ProgressBar progress = new ProgressBar();
+
+        timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(progress.progressProperty(), 0)),
+                new KeyFrame(Duration.seconds(5), _ -> submitFlashcardAction.accept(""), new KeyValue(progress.progressProperty(), 1))
+        );
+        timeline.setCycleCount(1);
+
+        HBox container = KRegions.KHorizontalBox("", Pos.TOP_CENTER, 0, progress);
+
+        gameState.overlayOn.addListener(((_, _, newV) -> {
+            if (newV) {
+                parent.getChildren().add(container);
+                timeline.play();
+            } else {
+                parent.getChildren().remove(container);
+                timeline.stop();
+            }
+        }));
     }
 }

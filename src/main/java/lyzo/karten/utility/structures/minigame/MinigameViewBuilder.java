@@ -1,10 +1,11 @@
 package lyzo.karten.utility.structures.minigame;
 
 import javafx.application.Platform;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -12,16 +13,18 @@ import lyzo.karten.utility.structures.ViewBuilder;
 import lyzo.karten.utility.ui.KControls;
 import lyzo.karten.utility.ui.KRegions;
 
+import java.util.function.Consumer;
+
 public abstract class MinigameViewBuilder implements ViewBuilder {
 
     public abstract void drawGame();
 
-    public void buildOverlay(StackPane parent, GameState gameState, StringProperty response) {
+    public void buildOverlay(StackPane parent, GameState gameState, Consumer<String> submitFlashcardAction) {
         Label frontContent = KControls.KLabel("heading2", gameState.activeCard.get().front());
-        gameState.activeCard.addListener((observable, oldValue, newValue) -> frontContent.setText(newValue.front()));
+        gameState.activeCard.addListener((_, _, newValue) -> frontContent.setText(newValue.front()));
 
         TextField input = KControls.KTextField("heading2", "answer");
-        response.bind(input.textProperty());
+        input.setOnAction(_ -> submitFlashcardAction.accept(input.getText()));
 
         VBox overlay = KRegions.KVerticalBox("div", Pos.CENTER, 20, frontContent, input);
 

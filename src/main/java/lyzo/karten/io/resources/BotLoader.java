@@ -10,7 +10,19 @@ import java.util.Objects;
 
 public class BotLoader {
 
-    public final static Bot BROK = loadBot("BROK");
+    public final static Bot BROK = loadBot("brok");
+
+    public static List<String> getBotList()  {
+        try {
+            List<String> lines = Files.readAllLines(Path.of(Objects.requireNonNull(BotLoader.class.getResource("/bots/bots.txt")).getPath()));
+
+            lines.forEach(s -> lines.set(lines.indexOf(s), s.strip()));
+
+            return lines;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static Bot loadBot(String name) {
         try {

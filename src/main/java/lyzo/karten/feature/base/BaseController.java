@@ -51,7 +51,7 @@ public class BaseController implements Controller {
 
     // display play main view
     private void playAction() {
-        mainView.set(new PlayController(appModel, this::homeAction).buildView());
+        mainView.set(new PlayController(appModel, userModel, this::homeAction).buildView());
     }
 
     // display home main view

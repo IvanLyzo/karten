@@ -53,6 +53,7 @@ public class ThemesViewBuilder implements ViewBuilder {
 
                 Label propertyName = KControls.KLabel("heading", pair.getKey());
                 TextField propertyValue = KControls.KTextField("", pair.getValue());
+
                 Button makeChanges = KControls.KButton("yellow-button", KControls.KLabel("heading", "Save changes"), () -> {
                     Optional<ThemeHandler.PROPERTIES> property = Arrays.stream(ThemeHandler.PROPERTIES.values()).filter(s -> Objects.equals(s.uid, pair.getKey())).findFirst();
                     if (property.isEmpty()) {

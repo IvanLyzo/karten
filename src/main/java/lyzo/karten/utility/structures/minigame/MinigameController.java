@@ -10,7 +10,7 @@ public abstract class MinigameController implements Controller {
     public abstract void initGame();
 
     public abstract void updateGame(double delta);
-    public abstract void submitResponse();
+    public abstract void submitResponse(String s);
 
     public abstract void drawGame();
 

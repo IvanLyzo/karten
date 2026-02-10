@@ -49,7 +49,7 @@ public class PlayController implements Controller {
     private void rowingGameAction() {
         Runnable playEvent = () -> minigameController.set(new RowingController(appModel, (RowingGameState) gameState.get(), this::winCondition));
 
-        view.set(new RowingLobbyViewBuilder(gameState, playEvent).build());
+        view.set(new RowingLobbyViewBuilder(gameState, playEvent, userModel.getUsername().get()).build());
     }
 
     private void winCondition(MinigameResultViewBuilder.MinigameResult result) {

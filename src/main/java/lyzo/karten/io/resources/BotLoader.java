@@ -2,31 +2,28 @@ package lyzo.karten.io.resources;
 
 import lyzo.karten.model.Bot;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class BotLoader {
 
-    public final static Bot BROK = loadBot("brok");
-
     public static List<String> getBotList()  {
-        try {
-            List<String> lines = Files.readAllLines(Path.of(Objects.requireNonNull(BotLoader.class.getResource("/bots/bots.txt")).getPath()));
+        try (InputStream is = Objects.requireNonNull(BotLoader.class.getResource("/bots/bots.txt")).openStream()) {
 
-            lines.forEach(s -> lines.set(lines.indexOf(s), s.strip()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-            return lines;
+            return br.lines().toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static Bot loadBot(String name) {
-        try {
-            List<String> lines = Files.readAllLines(Path.of(Objects.requireNonNull(BotLoader.class.getResource("/bots/" + name + ".txt")).getPath()));
+        try (InputStream is = Objects.requireNonNull(BotLoader.class.getResource("/bots/bots.txt")).openStream()) {
 
             // TODO: LOAD PLAYER DATA AND RETURN BOT OBJECT
 

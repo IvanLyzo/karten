@@ -70,10 +70,11 @@ public class EditorViewBuilder implements ViewBuilder {
 
         Button editName = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "edit"), null);
 
-        HBox nameBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, name, editName);
+        HBox nameBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, name);
         nameBox.setMaxWidth(Region.USE_PREF_SIZE);
 
         editName.setOnAction(_ -> KControls.editMode(nameBox, name, s -> deckChanges.set(new Deck.CreateData(s, deck.get().description()))));
+        nameBox.getChildren().add(editName);
 
         // deck description box
         Label description = KControls.KLabel("heading2-shadow", deck.get().description());
@@ -87,10 +88,11 @@ public class EditorViewBuilder implements ViewBuilder {
 
         Button editDescription = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "edit"), null);
 
-        HBox descriptionBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, description, editDescription);
+        HBox descriptionBox = KRegions.KHorizontalBox("div", Pos.CENTER_LEFT, 20, description);
         descriptionBox.setMaxWidth(Region.USE_PREF_SIZE);
 
-        editDescription.setOnAction(e -> KControls.editMode(descriptionBox, description, s -> deckChanges.set(new Deck.CreateData(deck.get().name(), s))));
+        editDescription.setOnAction(_ -> KControls.editMode(descriptionBox, description, s -> deckChanges.set(new Deck.CreateData(deck.get().name(), s))));
+        descriptionBox.getChildren().add(editDescription);
 
         // header box
         HBox headerBox = KRegions.KHorizontalBox("", Pos.CENTER_LEFT, 50, nameBox, descriptionBox);
@@ -155,7 +157,7 @@ public class EditorViewBuilder implements ViewBuilder {
                     return;
                 }
 
-                Label id = KControls.KLabel("heading2-shadow", card.id() + "");
+                Label id = KControls.KLabel("heading2-shadow", card.front() + ": " + card.back());
                 HBox cardBox = KRegions.KHorizontalBox("card-view", Pos.CENTER_LEFT, 20, id);
 
                 setGraphic(cardBox);
@@ -201,6 +203,7 @@ public class EditorViewBuilder implements ViewBuilder {
         Label side = KControls.KLabel("heading2-shadow", "Front");
         Button flipCard = KControls.KButton("yellow-button", KControls.KLabel("heading2-shadow", "Flip card"), () -> {
             previewFront.set(!previewFront.get());
+            side.setText(previewFront.get() ? "Front" : "Back");
         });
 
         HBox flipBox = KRegions.KHorizontalBox("div-special", Pos.CENTER_LEFT, 20, side, flipCard);

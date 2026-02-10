@@ -5,7 +5,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lyzo.karten.handler.ProfileHandler;
 import lyzo.karten.handler.ThemeHandler;
-import lyzo.karten.io.AppDataPath;
+import lyzo.karten.io.disk.AppDataPath;
 import lyzo.karten.io.disk.DBAccess;
 import lyzo.karten.feature.base.BaseController;
 import lyzo.karten.io.disk.FileAccess;

@@ -1,10 +1,8 @@
 package lyzo.karten.feature.play.minigame.rowing;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.util.Pair;
 import lyzo.karten.feature.play.MinigameResultViewBuilder;
 import lyzo.karten.utility.Bounds2D;
 import lyzo.karten.io.resources.GraphicLoader;
@@ -24,7 +22,7 @@ public class RowingGameState extends GameState {
 
     public int correctAnswers = 0;
 
-    public RowingGameState(int courseLength, int playerCount) {
+    public RowingGameState(String username, int courseLength, int playerCount) {
         // save key data at initialization
         this.courseLength = courseLength;
         this.playerCount = playerCount;
@@ -34,11 +32,12 @@ public class RowingGameState extends GameState {
         details.add(finishLine);
 
         // init players
-        user = new Player(0, "User player", GraphicLoader.RED_BOAT_GRAPHIC, 55, 110);
+        user = new Player(0, username, GraphicLoader.RED_BOAT_GRAPHIC, 55, 110);
         players.add(user);
 
+        Random r = new Random();
         for (int i = 1; i < playerCount; i++) {
-            players.add(new Player(i, "Player " + i, GraphicLoader.RED_BOAT_GRAPHIC, 80, 0));
+            players.add(new Player(i, "Player " + i, GraphicLoader.GREEN_BOAT_GRAPHIC, r.nextInt(75, 86), 0));
         }
 
         // set up overlay system listeners
@@ -73,9 +72,10 @@ public class RowingGameState extends GameState {
         }
 
         Comparator<Map.Entry<String, Integer>> comparator = Map.Entry.comparingByValue();
-        leaderboard.sort(comparator);
+        leaderboard.sort(comparator.reversed());
 
-        return new MinigameResultViewBuilder.MinigameResult(leaderboard, correctAnswers * 10);
+        return new MinigameResultViewBuilder.MinigameResult(leaderboard, user,
+                correctAnswers, correctAnswers * 10);
     }
 
     public static class GameObject {

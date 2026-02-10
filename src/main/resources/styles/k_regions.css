@@ -1,4 +1,4 @@
-/* specialized containers */
+/* SPECIALIZED CONTAINERS */
 .section-pane {
     -fx-background-color: -karten-off-white;
     -fx-background-radius: 20;
@@ -26,7 +26,8 @@
     -fx-effect: dropshadow(three-pass-box, -karten-off-white, 0, 0, 6, 6);
 }
 
-/* containers */
+
+/* CONTAINERS */
 .div {
     -fx-background-color: -karten-blue;
     -fx-background-radius: 20;
@@ -45,12 +46,11 @@
     -fx-effect: dropshadow(three-pass-box, -karten-purple-shadow, 0, 0, 6, 6);
 }
 
-/* background */
+/* BACKGROUND */
 .back-pane {
     -fx-background-color: -karten-blue;
 }
 
-/* defaults */
 .split-pane > .split-pane-divider {
     -fx-background-color: transparent;
 }
